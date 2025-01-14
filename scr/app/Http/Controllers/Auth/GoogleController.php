@@ -21,28 +21,36 @@ class GoogleController extends Controller
         try {
             $googleUser = Socialite::driver('google')->user();
 
-            // Log thông tin user từ Google để debug
-            Log::info('Google User Info:', [
-                'email' => $googleUser->getEmail(),
+            // Kiểm tra email đã tồn tại
+            $existingUser = User::where('email', $googleUser->getEmail())->first();
+
+            if ($existingUser) {
+                if ($existingUser->google_id) {
+                    // Đã có tài khoản Google, đăng nhập bình thường
+                    Auth::login($existingUser);
+                    return redirect()->route('home')->with('success', 'Đăng nhập thành công!');
+                } else {
+                    // Liên kết tài khoản hiện tại với Google
+                    $existingUser->update([
+                        'google_id' => $googleUser->getId()
+                    ]);
+                    Auth::login($existingUser);
+                    return redirect()->route('home')
+                        ->with('success', 'Tài khoản của bạn đã được liên kết với Google!');
+                }
+            }
+
+            // Tạo tài khoản mới nếu chưa tồn tại
+            $newUser = User::create([
                 'name' => $googleUser->getName(),
-                'id' => $googleUser->getId()
+                'email' => $googleUser->getEmail(),
+                'google_id' => $googleUser->getId(),
+                'password' => bcrypt(Str::random(16)),
+                'utype' => 'customer',
             ]);
 
-            $user = User::updateOrCreate(
-                [
-                    'email' => $googleUser->getEmail()
-                ],
-                [
-                    'name' => $googleUser->getName(),
-                    'google_id' => $googleUser->getId(),
-                    'password' => bcrypt(Str::random(16)),
-                    'utype' => 'customer',
-                ]
-            );
-
-            Auth::login($user);
-
-            return redirect()->route('home')->with('success', 'Đăng nhập thành công!');
+            Auth::login($newUser);
+            return redirect()->route('home')->with('success', 'Đăng ký và đăng nhập thành công!');
         } catch (\Exception $e) {
             Log::error('Google Login Error: ' . $e->getMessage(), [
                 'trace' => $e->getTraceAsString()

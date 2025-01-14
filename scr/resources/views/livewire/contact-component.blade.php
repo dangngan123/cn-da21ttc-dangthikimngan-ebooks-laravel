@@ -35,7 +35,7 @@
                 <input
                     type="text"
                     id="name"
-                    wire:model.lazy="name"
+                    wire:model.defer="name"
                     class="form-control @error('name') is-invalid @enderror"
                     placeholder="Nhập họ và tên của bạn">
                 @error('name')
@@ -48,7 +48,7 @@
                 <input
                     type="email"
                     id="email"
-                    wire:model.lazy="email"
+                    wire:model.defer="email"
                     class="form-control @error('email') is-invalid @enderror"
                     placeholder="example@domain.com">
                 @error('email')
@@ -61,7 +61,7 @@
                 <input
                     type="tel"
                     id="telephone"
-                    wire:model.lazy="telephone"
+                    wire:model.defer="telephone"
                     class="form-control @error('telephone') is-invalid @enderror"
                     placeholder="0xxxxxxxxx"
                     pattern="[0-9]{10,11}">
@@ -75,7 +75,7 @@
                 <input
                     type="text"
                     id="subject"
-                    wire:model.lazy="subject"
+                    wire:model.defer="subject"
                     class="form-control @error('subject') is-invalid @enderror"
                     placeholder="Nhập chủ đề">
                 @error('subject')
@@ -87,7 +87,7 @@
                 <label for="message">Nội dung tin nhắn <span class="required">*</span></label>
                 <textarea
                     id="message"
-                    wire:model.lazy="message"
+                    wire:model.defer="message"
                     class="form-control @error('message') is-invalid @enderror"
                     rows="5"
                     placeholder="Nhập nội dung tin nhắn của bạn"></textarea>

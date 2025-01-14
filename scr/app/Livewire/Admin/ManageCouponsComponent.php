@@ -52,24 +52,21 @@ class ManageCouponsComponent extends Component
 
 
 
-
-    // Xử lý xóa khi được xác nhận
-    public function delete()
+    function delete()
     {
-        // Kiểm tra nếu mã giảm giá đã được sử dụng trong đơn hàng
-        if ($this->isCouponUsed($this->delete_id)) {
-            flash('Không thể xóa mã giảm giá này vì đã được sử dụng trong đơn hàng.')->error();
-            return;
+        try {
+            $coupon = Coupon::find($this->delete_id);
+
+            if ($coupon) {
+                $coupon->delete();
+                flash()->addSuccess('Mã giảm giá đã được xóa thành công.');
+            } else {
+              
+            }
+        } catch (\Exception $e) {
+            flash()->addError('Có lỗi xảy ra khi xóa mã giảm giá');
         }
-
-        $coupon = Coupon::find($this->delete_id);
-        $coupon->delete();
-        flash('Mã giảm giá đã được xóa thành công.');
     }
-    // Kết thúc xác nhận xóa
-
-
-
 
     //Thêm slider
     public function showCouponModal()

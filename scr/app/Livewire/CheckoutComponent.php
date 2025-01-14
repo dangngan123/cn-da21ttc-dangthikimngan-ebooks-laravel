@@ -58,6 +58,34 @@ class CheckoutComponent extends Component
 
     public $status;
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    public function showShipingModal()
+    {
+        $this->dispatch('shipping-modal');
+    }
+
     public function updated($fields)
     {
         $this->validateOnly($fields, [
@@ -99,9 +127,50 @@ class CheckoutComponent extends Component
         $shipping->save();
 
         $this->reset();
-        $this->dispatch('hide-shipping-modal');
+        $this->dispatch('shipping-modal');
         flash('Đã thêm địa chỉ giao hàng thành công!');
     }
+
+
+    public function resetForm()
+    {
+        $this->address_type = '';
+        $this->name = '';
+        $this->status = '';
+        $this->phone;
+        $this->province = '';
+        $this->district = '';
+        $this->ward = '';
+        $this->address = '';
+        $this->shipping_id = '';
+        $this->status = '';
+        $this->titleForm = "Thêm địa chỉ";
+        $this->resetValidation();
+    }
+    public $editForm = false;
+    public $titleForm = "Thêm địa chỉ";
+    public $sid;
+    public function showEditShipping($id)
+    {
+        $this->dispatch('shipping-modal');
+        $this->titleForm = "Chỉnh sửa địa chỉ";
+        $this->editForm = true;
+
+        $shipping = Shiping::where('id', $id)->first();
+        $this->address_type = $shipping->address_type;
+        $this->name = $shipping->name;
+        $this->phone = $shipping->phone;
+        $this->address = $shipping->address;
+        $this->province = $shipping->province;
+        $this->district = $shipping->district;
+        $this->ward = $shipping->ward;
+        $this->address = $shipping->address;
+        $this->shipping_id = $shipping->id;
+        $this->status = $shipping->status;
+        $this->sid = $shipping->id;
+    }
+
+
 
 
     // Lắng nghe sự kiện từ JavaScript (sự kiện 'deleteConfirmed')
@@ -130,31 +199,8 @@ class CheckoutComponent extends Component
         }
     }
 
-    public function showShipingModal()
-    {
-        $this->dispatch('add-show-shipping-modal');
-    }
 
-    public function ShowUpdateShippingInfo($id)
-    {
-        $this->dispatch('show-update-shipping-modal');
-        $this->updateShipInfo($id);
-    }
 
-    public function updateShipInfo($id)
-    {
-        $shipping = Shiping::where('id', $id)->first();
-        $this->address_type = $shipping->address_type;
-        $this->name = $shipping->name;
-        $this->phone = $shipping->phone;
-        $this->address = $shipping->address;
-        $this->province = $shipping->province;
-        $this->district = $shipping->district;
-        $this->ward = $shipping->ward;
-        $this->address = $shipping->address;
-        $shipping->status = $this->status;
-        $this->shipping_id = $shipping->id;
-    }
 
     public function updateShipping()
     {
@@ -180,13 +226,15 @@ class CheckoutComponent extends Component
         $shipping->district = $this->district;
         $shipping->ward = $this->ward;
         $shipping->address = $this->address;
-        $shipping->status = $status; // Sử dụng giá trị của $status
+        $shipping->status = $status;
         $shipping->save();
 
-        $this->reset();
-        $this->dispatch('update-hide-shipping-modal');
+
+        $this->resetForm();
+        $this->dispatch('shipping-modal');
         flash('Đã cập nhật địa chỉ giao hàng thành công!');
     }
+
 
 
     public function calculateDiscount()

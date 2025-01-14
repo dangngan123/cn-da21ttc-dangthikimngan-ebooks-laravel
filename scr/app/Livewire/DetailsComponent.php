@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\Review;
 use App\Models\OrderItem;
 use App\Models\Coupon;
+use Illuminate\Http\Request;
 
 class DetailsComponent extends Component
 {
@@ -67,17 +68,24 @@ class DetailsComponent extends Component
 
     public function QtyIncrease($quantity)
     {
-
-        if ($quantity > $this->qty) {
-            $this->qty++;
+        if (is_numeric($quantity) && is_numeric($this->qty)) {
+            if ($quantity > $this->qty) {
+                $this->qty++;
+            } else {
+                flash()->error('Số lượng không đủ!');
+            }
         } else {
-            flash('Số lượng không đủ trong kho.');
+            // Khôi phục giá trị mặc định nếu dữ liệu không hợp lệ
+            $this->qty = max(1, $this->qty);
+            flash()->error('Giá trị không hợp lệ!');
         }
     }
     public function QtyDecrease()
     {
-        if ($this->qty > 1) {
+        if (is_numeric($this->qty) && $this->qty > 1) {
             $this->qty--;
+        } else {
+            flash()->error('Không thể giảm số lượng thấp hơn 1!');
         }
     }
 
@@ -106,16 +114,39 @@ class DetailsComponent extends Component
     public function toggleShowAll()
     {
         $this->showAllCoupons = !$this->showAllCoupons;
+        $this->selectedCoupon = null; // Ẩn modal chi tiết nếu có
     }
 
 
 
 
 
+    // Phương thức để hiển thị thông báo khi admin nhấn "Thêm vào giỏ hàng"
+    public function showAdminAlert()
+    {
+        // Lưu thông báo vào session
+        flash()->error('Lỗi: Admin không thể thêm sản phẩm vào giỏ hàng!');
+    }
 
 
 
 
+
+    public function reply(Request $request, Review $review)
+    {
+        // Validate dữ liệu đầu vào
+        $validated = $request->validate([
+            'admin_reply' => 'required|string|max:1000'
+        ]);
+
+        // Cập nhật phản hồi
+        $review->update([
+            'admin_reply' => $validated['admin_reply'],
+            'admin_reply_at' => now()
+        ]);
+
+        return back()->with('success', 'Phản hồi đã được gửi thành công');
+    }
 
 
 

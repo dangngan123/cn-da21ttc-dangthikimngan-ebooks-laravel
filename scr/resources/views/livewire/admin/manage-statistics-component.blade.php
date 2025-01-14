@@ -6,7 +6,7 @@
                 <h5 class="card-title">Lọc Dữ Liệu</h5>
                 <div class="row align-items-center">
                     <div class="col-md-3">
-                        <select wire:model="filterType" class="form-select">
+                        <select wire:model.live="filterType" class="form-select">
                             <option value="custom">Tùy chỉnh</option>
                             <option value="today">Hôm nay</option>
                             <option value="week">Tuần này</option>
@@ -14,10 +14,10 @@
                         </select>
                     </div>
                     <div class="col-md-3">
-                        <input type="date" wire:model="startDate" class="form-control" />
+                        <input type="date" wire:model="startDate" class="form-control" {{ $filterType !== 'custom' ? 'disabled' : '' }} />
                     </div>
                     <div class="col-md-3">
-                        <input type="date" wire:model="endDate" class="form-control" />
+                        <input type="date" wire:model="endDate" class="form-control" {{ $filterType !== 'custom' ? 'disabled' : '' }} />
                     </div>
                     <!-- No need for render button -->
                 </div>
@@ -100,20 +100,8 @@
             </div>
         </div>
     </div>
-    <!-- New Chart: Daily Orders Count -->
-    <div class="row">
-        <div class="col-md-12">
-            <div class="card mb-4">
-                <div class="card-header">
-                    <h5 class="card-title mb-0">Số Lượng Đơn Hàng Theo Ngày</h5>
-                </div>
-                <div class="card-body">
-                    <div id="dailyOrdersChart" style="height: 300px;"></div>
-                </div>
-            </div>
-        </div>
-    </div>
-   
+    
+
 
 
     @push('scripts')
@@ -245,45 +233,8 @@
                 }
             }
         };
-        // Daily Orders Count Chart
-        var dailyOrdersOptions = {
-            series: [{
-                name: 'Số Lượng Đơn Hàng',
-                data: @json($dailyOrdersData -> pluck('order_count') -> toArray()) // Số lượng đơn hàng mỗi ngày
-            }],
-            chart: {
-                type: 'line',
-                height: 300
-            },
-            xaxis: {
-                categories: @json($dailyOrdersData -> pluck('date') -> toArray()) // Các ngày
-            },
-            title: {
-                text: 'Số Lượng Đơn Hàng Theo Ngày',
-                align: 'center',
-                style: {
-                    fontSize: '18px',
-                    fontWeight: 'bold',
-                    color: '#333'
-                }
-            },
-            yaxis: {
-                title: {
-                    text: 'Số Đơn Hàng'
-                }
-            },
-            tooltip: {
-                y: {
-                    formatter: function(value) {
-                        return value + ' đơn hàng'; // Hiển thị số lượng đơn hàng trong tooltip
-                    }
-                }
-            },
-            stroke: {
-                curve: 'smooth' // Lượn sóng mượt mà
-            }
-        };
        
+
         // Khởi tạo biểu đồ khi tài liệu đã được tải xong
         document.addEventListener('DOMContentLoaded', function() {
             var dailyOrdersChart = new ApexCharts(document.querySelector("#dailyOrdersChart"), dailyOrdersOptions);

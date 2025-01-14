@@ -27,6 +27,7 @@
     <!-- Thêm CSS jQuery UI -->
     <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
 
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
 
 
 
@@ -54,17 +55,18 @@
                             </ul>
                         </div> -->
                     </div>
-                    <div class="col-xl-6 col-lg-4 ">
+                    <div class="col-xl-6 col-lg-4">
                         <div class="text-center">
                             <div id="news-flash" class="d-inline-block">
-                                <ul style="font-size: 12px;">
-                                    <li>Nhận ngay sách hay với ưu đãi giảm giá lên tới 50%! <a href="{{route('shop')}}">Xem Chi tiết</a></li>
+                                <ul style="font-size: 10px; color:rgb(251, 251, 251);"> <!-- Màu vàng đậm -->
+                                    <li>Nhận ngay sách hay với ưu đãi giảm giá lên tới 50%! <a href="{{route('shop')}}" style="color: #FFD700;">Xem Chi tiết</a></li>
                                     <li>Ưu đãi độc quyền – Tiết kiệm nhiều hơn với mã giảm giá!</li>
-                                    <li>Kho sách hot – Giảm giá đến 35% hôm nay! <a href="{{route('shop')}}">Mua ngay</a></li>
+                                    <li>Kho sách hot – Giảm giá đến 35% hôm nay! <a href="{{route('shop')}}" style="color: #FFD700;">Mua ngay</a></li>
                                 </ul>
                             </div>
                         </div>
                     </div>
+
                     <style>
                         logout-link {
                             font-size: 12px;
@@ -144,7 +146,7 @@
                                     <ul class="dropdown-menu dropdown-menu-end shadow-sm" aria-labelledby="userMenu">
                                         @if(Auth::user()->utype == 'admin')
                                         <li><a class="dropdown-item" href="{{ route('admin.dashboard') }}">Dashboard</a></li>
-                                        <li><a class="dropdown-item" href="#">Thiết lập tài khoản</a></li>
+
 
                                         @else
                                         <li><a class="dropdown-item" href="{{ route('customer.dashboard') }}">Thiết lập tài khoản</a></li>
@@ -790,20 +792,18 @@
 
 
 <script>
-    //hiển thị thêm phương thức vận chuyển
-    window.addEventListener('add-show-shipping-modal', event => {
-        $('#addShipingModal').modal('show');
-    })
-    window.addEventListener('hide-shipping-modal', event => {
-        $('#addShipingModal').modal('hide');
-    })
+    // //hiển thị thêm phương thức vận chuyển
+    // window.addEventListener('add-show-shipping-modal', event => {
+    //     $('#addShipingModal').modal('show');
+    // })
+    // window.addEventListener('hide-shipping-modal', event => {
+    //     $('#addShipingModal').modal('hide');
+    // })
 
     //hiển thị cập nhật phương thức vận chuyển
-    window.addEventListener('show-update-shipping-modal', event => {
-        $('#updateShipingModal').modal('show');
-    })
-    window.addEventListener('update-hide-shipping-modal', event => {
-        $('#updateShipingModal').modal('hide');
+    window.addEventListener('shipping-modal', event => {
+        $('#ShipingModal').modal('show');
+        $('#ShipingModal').modal('hide');
     })
 
     window.addEventListener('product-quick-view', event => {

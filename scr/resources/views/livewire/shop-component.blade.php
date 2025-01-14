@@ -79,14 +79,10 @@
                                         <!-- <div class="product-category">
                                             <a href="shop.html">Music</a>
                                         </div> -->
-                                        <h2 style="font-size: 13px; margin: 5px 0; text-align: left; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">
+                                        <h2 style="font-size: 13px; margin: 5px 0; text-align: left; display: -webkit-box; -webkit-line-clamp: 1; -webkit-box-orient: vertical; overflow: hidden;">
                                             <a href="{{route('details', ['slug'=>$product->slug])}}">{{$product->name}}</a>
                                         </h2>
-                                        <div class=" rating-result" title="90%">
-                                            <!-- <span>
-                                                <span>90%</span>
-                                            </span> -->
-                                        </div>
+
                                         <div class="product-price">
                                             <span>{{ $product->sale_price }}đ</span>
                                             <span class="old-price">{{ $product->reguler_price}}đ</span>
@@ -143,13 +139,13 @@
                                     <label class="section-title">Độ tuổi</label>
                                     <div class="custome-checkbox">
                                         <input class="form-check-input" type="checkbox" name="checkbox" id="ageCheckbox1" wire:model.live="selectedAges" value="1-6">
-                                        <label class="form-check-label" for="ageCheckbox1"><span>1 - 6 years</span></label>
+                                        <label class="form-check-label" for="ageCheckbox1"><span>1 - 6 tuổi</span></label>
                                         <br>
                                         <input class="form-check-input" type="checkbox" name="checkbox" id="ageCheckbox2" wire:model.live="selectedAges" value="7-13">
-                                        <label class="form-check-label" for="ageCheckbox2"><span>7 - 13 years</span></label>
+                                        <label class="form-check-label" for="ageCheckbox2"><span>7 - 13 tuổi</span></label>
                                         <br>
                                         <input class="form-check-input" type="checkbox" name="checkbox" id="ageCheckbox3" wire:model.live="selectedAges" value="14-18">
-                                        <label class="form-check-label" for="ageCheckbox3"><span>14 - 18 years</span></label>
+                                        <label class="form-check-label" for="ageCheckbox3"><span>14 - 18 tuổi</span></label>
                                     </div>
 
                                     <label class="fw-900">Giá</label>
@@ -208,11 +204,11 @@
                                     <img src="{{asset('admin/product/'.$nproduct->image)}}" alt="#">
                                 </div>
                                 <div class="content pt-10">
-                                    <h5><a href="{{route('details', ['slug'=>$nproduct->slug])}}">{{$nproduct->name}}</a></h5>
+                                    <h5 style="overflow: hidden; text-overflow: ellipsis; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;">
+                                        <a href="{{route('details', ['slug'=>$nproduct->slug])}}">{{$nproduct->name}}</a>
+                                    </h5>
                                     <p class="price mb-0 mt-5">{{$nproduct->reguler_price}}đ</p>
-                                    <div class="product-rate">
-                                        <div class="product-rating" style="width:90%"></div>
-                                    </div>
+
                                 </div>
                             </div>
                             @endforeach

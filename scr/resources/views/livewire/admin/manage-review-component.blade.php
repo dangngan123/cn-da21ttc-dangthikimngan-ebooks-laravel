@@ -73,12 +73,11 @@
             <div class="table-responsive">
                 <table class="table">
                     <thead>
-                        <tr>
-                            <!-- <th><input type="checkbox" wire:model.live="selectAll" class="small-checkbox"></th> -->
-                            <th>STT</th>
+                        <tr class="text-center">
                             <th><input type="checkbox" wire:model.live="selectAll" class="small-checkbox"></th>
+                            <th>STT</th>
                             <th>Mã khách hàng</th>
-                            <th>Tên khách hàng</th>
+                            <th>Tên sản phẩm</th>
                             <th>Đánh giá</th>
                             <th>Bình luận</th>
                             <th>Ngày đánh giá</th>
@@ -86,21 +85,19 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach($reviews as $index => $review)
-                        <tr class="text-center">
-                            <!-- <td class="small-checkbox">
-                                <input type="checkbox" wire:model.live="selectedItems" value="{{ $review->id }}">
-                            </td> -->
-                            <td>{{$index+$reviews->firstItem()}}</td>
+                        @forelse($reviews as $index => $review)
+                        <tr class="{{$this->isColor($review->id)}}">
                             <td class="small-checkbox">
                                 <input type="checkbox" wire:model.live="selectedItems" value="{{ $review->id }}">
                             </td>
+                            <td>{{$index+$reviews->firstItem()}}</td>
+
                             <td class="text-center">#{{$review->user->id}}</td>
-                            <td>{{$review->user->name}}</td>
-                            <td>{{$review->rating}}</td>
-                            <td>{{$review->comment}}</td>
-                            <td>{{$review->created_at}}</td>
-                            <td>
+                            <td class="text-center">{{ $review->product->name ?? 'Không tìm thấy sản phẩm' }}</td>
+                            <td class="text-center">{{$review->rating}}</td>
+                            <td class="text-center">{{$review->comment}}</td>
+                            <td class="text-center">{{$review->created_at}}</td>
+                            <td class="text-center">
                                 <div class="dropdown">
                                     <button
                                         class="btn btn-secondary dropdown-toggle"
@@ -143,10 +140,14 @@
                                     </ul>
                                     @endif
                                 </div>
-                            </td>
 
+                            </td>
                         </tr>
-                        @endforeach
+                        @empty
+                        <tr>
+                            <td colspan="12" class="text-center text-danger">Không có đánh giá nào</td>
+                        </tr>
+                        @endforelse
                     </tbody>
                 </table>
                 {{ $reviews->links() }}

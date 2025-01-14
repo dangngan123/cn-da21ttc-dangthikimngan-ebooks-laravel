@@ -95,10 +95,10 @@ class ManageReviewComponent extends Component
 
 
     //Chọn màu cho review
-    public function isColor($sliderId)
+    public function isColor($reviewId)
     {
         if ($this->selectAll == false) {
-            if (in_array($sliderId, $this->selectedItems)) {
+            if (in_array($reviewId, $this->selectedItems)) {
                 return 'bg-1';
             } else {
                 return '';
@@ -110,8 +110,9 @@ class ManageReviewComponent extends Component
 
     public function render()
     {
-        $reivews = Review::paginate($this->pagesize);
+
+        $reviews = Review::with('product')->paginate(10);
         $this->resetPage();
-        return view('livewire.admin.manage-review-component', ['reviews' => $reivews]);
+        return view('livewire.admin.manage-review-component', ['reviews' => $reviews]);
     }
 }

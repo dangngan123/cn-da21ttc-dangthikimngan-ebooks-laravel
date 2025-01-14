@@ -37,7 +37,7 @@ class CartComponent extends Component
             $qty = $product->qty + 1;
             Cart::instance('cart')->update($id, $qty);
         } else {
-            flash('Số lượng không đủ trong kho.');
+            flash()->error('Số lượng không đủ trong kho.');
         }
         $this->dispatch('refreshComponent')->to('carticon-component');
     }
@@ -71,12 +71,26 @@ class CartComponent extends Component
 
     public function checkout()
     {
+        // Kiểm tra nếu người dùng đã đăng nhập
         if (Auth::check()) {
+            // Kiểm tra số lượng sản phẩm trong giỏ hàng trước khi thanh toán
+            foreach (Cart::instance('cart')->content() as $item) {
+                $product = Product::find($item->id);  // Lấy sản phẩm từ DB
+                if ($product && $product->quantity < $item->qty) {
+                    // Nếu số lượng trong giỏ hàng vượt quá số lượng trong kho
+                    session()->flash('error_message', "Sản phẩm '{$product->name}' không đủ số lượng trong kho hiện số lượng trong chỉ có '{$product->quantity}' sản phẩm.");
+                    return redirect()->route('cart');  // Quay lại trang giỏ hàng để sửa lại
+                }
+            }
+
+            // Nếu không có lỗi, tiếp tục thanh toán
             return redirect()->route('checkout');
         } else {
+            // Nếu chưa đăng nhập, điều hướng đến trang đăng nhập
             return redirect()->route('login');
         }
     }
+
 
     public function applyCouponCode()
     {
@@ -170,7 +184,10 @@ class CartComponent extends Component
 
     public function render()
     {
-
+        if (Auth::check()) {
+            Cart::instance('cart')->store(Auth::user()->email);
+            Cart::instance('wishlist')->store(Auth::user()->email);
+        }
 
 
 

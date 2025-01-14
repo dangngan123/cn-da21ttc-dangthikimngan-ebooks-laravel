@@ -10,7 +10,20 @@ class Review extends Model
     //
 
     use HasFactory;
-    protected $fillable = ['order_item_id', 'user_id', 'rating', 'comment', 'images', 'status'];
+    protected $fillable = [
+        'user_id',
+        'order_item_id',
+        'rating',
+        'comment',
+        'images',
+        'status',
+        'admin_reply',
+        'admin_reply_at'
+    ];
+
+    protected $casts = [
+        'admin_reply_at' => 'datetime',
+    ];
 
 
     public function orderItem()
@@ -25,4 +38,16 @@ class Review extends Model
     {
         return $this->belongsTo(User::class, 'user_id');
     }
+    public function product()
+    {
+        return $this->hasOneThrough(
+            Product::class,      // Model sản phẩm cần truy xuất
+            OrderItem::class,    // Bảng trung gian
+            'id',                // Khóa chính của order_items
+            'id',                // Khóa chính của products
+            'order_item_id',     // Khóa ngoại trong reviews
+            'product_id'         // Khóa ngoại trong order_items
+        );
+    }
+    
 }

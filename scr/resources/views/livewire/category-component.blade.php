@@ -59,40 +59,35 @@
                         <div class="row product-grid-3">
 
                             @foreach($products as $product)
-                            <div class="col-lg-4 col-md-4 col-6 col-sm-6">
-                                <div class="product-cart-wrap mb-30">
+
+                            <div class="col-lg-3 col-md-4 col-12 col-sm-6">
+                                <div class="product-cart-wrap small hover-up">
                                     <div class="product-img-action-wrap">
                                         <div class="product-img product-img-zoom">
-                                            <a href="{{route('details', ['slug'=>$product->slug])}}">
-                                                <img class="default-img" src="{{ $product->image}}" alt="">
+                                            <a href="{{route('details', ['slug'=>$product->slug])}}" tabindex="0">
+                                                <img class="default-img img-thumbnail" src="{{asset('admin/product/'.$product->image)}}" alt="">
 
                                             </a>
                                         </div>
 
                                         <div class="product-badges product-badges-position product-badges-mrg">
+                                            @if($product->is_hot)
                                             <span class="hot">Hot</span>
+                                            @endif
                                         </div>
                                     </div>
                                     <div class="product-content-wrap">
-                                        <div class="product-category">
-                                            <a href="shop.html">Music</a>
-                                        </div>
-                                        <h2><a href="product-details.html">{{ $product->name }}</a></h2>
-                                        <div class="rating-result" title="90%">
-                                            <span>
-                                                <span>90%</span>
-                                            </span>
-                                        </div>
-                                        <div class="product-price">
-                                            <span>{{ $product->sale_price }}đ</span>
-                                            <span class="old-price">{{ $product->reguler_price}}đ</span>
-                                        </div>
+                                        <h2 style="font-size: 13px; margin: 5px 0; text-align: left; display: -webkit-box; -webkit-line-clamp: 1; -webkit-box-orient: vertical; overflow: hidden;">
+                                            <a href="{{route('details', ['slug'=>$product->slug])}}">{{$product->name}}</a>
+                                        </h2>
 
+                                        <div class="product-price">
+                                            <span>{{ $product->sale_price }}</span>
+                                            <span class="old-price">{{ $product->reguler_price }}</span>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-
-
                             @endforeach
 
 
@@ -135,118 +130,96 @@
                         </div>
                         <div class="sidebar-widget price_range range mb-30">
                             <div class="widget-header position-relative mb-20 pb-10">
-                                <h5 class="widget-title mb-10">Giá</h5>
+
                                 <div class="bt-1 border-color-1"></div>
                             </div>
                             <div class="price-filter">
-                                <div class="price-filter-inner">
-                                    <div id="slider-range" wrie:ignore></div>
-                                    <div class="price_slider_amount">
-                                        <div class="label-input">
-                                            <span>Range:</span>
-                                            <san>{{$min_price}}đ</san> - <san>{{$max_price}}đ</san>
-                                        </div>
-                                    </div>
-                                </div>
+                                <div class="sidebar-widget price_range range mb-30">
+                                    <div class="list-group" wire:ignore>
 
-                                <div class="list-group">
-                                    <div class="list-group-item mb-10 mt-10">
-                                        <label class="fw-900">Color</label>
+                                        <label class="section-title">Độ tuổi</label>
                                         <div class="custome-checkbox">
-                                            <input class="form-check-input" type="checkbox" name="checkbox" id="exampleCheckbox1" value="">
-                                            <label class="form-check-label" for="exampleCheckbox1"><span>Red (56)</span></label>
+                                            <input class="form-check-input" type="checkbox" name="checkbox" id="ageCheckbox1" wire:model.live="selectedAges" value="1-6">
+                                            <label class="form-check-label" for="ageCheckbox1"><span>1 - 6 tuổi</span></label>
                                             <br>
-                                            <input class="form-check-input" type="checkbox" name="checkbox" id="exampleCheckbox2" value="">
-                                            <label class="form-check-label" for="exampleCheckbox2"><span>Green (78)</span></label>
+                                            <input class="form-check-input" type="checkbox" name="checkbox" id="ageCheckbox2" wire:model.live="selectedAges" value="7-13">
+                                            <label class="form-check-label" for="ageCheckbox2"><span>7 - 13 tuổi</span></label>
                                             <br>
-                                            <input class="form-check-input" type="checkbox" name="checkbox" id="exampleCheckbox3" value="">
-                                            <label class="form-check-label" for="exampleCheckbox3"><span>Blue (54)</span></label>
+                                            <input class="form-check-input" type="checkbox" name="checkbox" id="ageCheckbox3" wire:model.live="selectedAges" value="14-18">
+                                            <label class="form-check-label" for="ageCheckbox3"><span>14 - 18 tuổi</span></label>
                                         </div>
-                                        <label class="fw-900 mt-15">Item Condition</label>
+
+                                        <label class="fw-900">Giá</label>
                                         <div class="custome-checkbox">
-                                            <input class="form-check-input" type="checkbox" name="checkbox" id="exampleCheckbox11" value="">
-                                            <label class="form-check-label" for="exampleCheckbox11"><span>New (1506)</span></label>
+                                            <input class="form-check-input" type="checkbox" name="checkbox"
+                                                id="priceRange1"
+                                                wire:model.live="priceRange"
+                                                value="0-150">
+                                            <label class="form-check-label" for="priceRange1">
+                                                <span>0 đ - 150 đ</span>
+                                            </label>
                                             <br>
-                                            <input class="form-check-input" type="checkbox" name="checkbox" id="exampleCheckbox21" value="">
-                                            <label class="form-check-label" for="exampleCheckbox21"><span>Refurbished (27)</span></label>
+
+                                            <input class="form-check-input" type="checkbox" name="checkbox"
+                                                id="priceRange2"
+                                                wire:model.live="priceRange"
+                                                value="150-300">
+                                            <label class="form-check-label" for="priceRange2">
+                                                <span>150 đ - 300 đ</span>
+                                            </label>
                                             <br>
-                                            <input class="form-check-input" type="checkbox" name="checkbox" id="exampleCheckbox31" value="">
-                                            <label class="form-check-label" for="exampleCheckbox31"><span>Used (45)</span></label>
+
+                                            <input class="form-check-input" type="checkbox" name="checkbox"
+                                                id="priceRange3"
+                                                wire:model.live="priceRange"
+                                                value="300-500">
+                                            <label class="form-check-label" for="priceRange3">
+                                                <span>300 đ - 500 đ</span>
+                                            </label>
+                                            <br>
+
+                                            <input class="form-check-input" type="checkbox" name="checkbox"
+                                                id="priceRange4"
+                                                wire:model.live="priceRange"
+                                                value="500-700">
+                                            <label class="form-check-label" for="priceRange4">
+                                                <span>500 đ - 700 đ</span>
+                                            </label>
                                         </div>
-                                        <div class="list-group">
-                                            <div class="list-group-item mb-10 mt-10">
-                                                <label class="fw-900 mt-15">Age Range</label>
-                                                <div class="custome-checkbox">
-                                                    <input class="form-check-input" type="checkbox" wire:model.live="selectedAges" value="1+">
-                                                    <label class="form-check-label" for="ageCheckbox1"><span>1+ years</span></label>
-                                                    <br>
-                                                    <input class="form-check-input" type="checkbox" wire:model.live="selectedAges" value="6+">
-                                                    <label class="form-check-label" for="ageCheckbox2"><span>6+ years</span></label>
-                                                    <br>
-                                                    <input class="form-check-input" type="checkbox" wire:model.live="selectedAges" value="13+">
-                                                    <label class="form-check-label" for="ageCheckbox3"><span>13+ years</span></label>
-                                                    <br>
-                                                    <input class="form-check-input" type="checkbox" wire:model.live="selectedAges" value="18+">
-                                                    <label class="form-check-label" for="ageCheckbox4"><span>18+ years</span></label>
-                                                </div>
-                                            </div>
 
 
-
-                                        </div>
                                     </div>
-                                    <a href="shop.html" class="btn btn-sm btn-default"><i class="fi-rs-filter mr-5"></i> Fillter</a>
-                                </div>
-                                <!-- Product sidebar Widget -->
-                                <div class="sidebar-widget product-sidebar  mb-30 p-30 bg-grey border-radius-10">
-                                    <div class="widget-header position-relative mb-20 pb-10">
-                                        <h5 class="widget-title mb-10">New products</h5>
-                                        <div class="bt-1 border-color-1"></div>
-                                    </div>
-                                    @foreach($nproducts as $nproduct)
-
-                                    <div class="single-post clearfix">
-                                        <div class="image">
-                                            <img src="{{$nproduct->image}}" alt="#">
-                                        </div>
-                                        <div class="content pt-10">
-                                            <h5><a href="product-details.html">{{$nproduct->name}}</a></h5>
-                                            <p class="price mb-0 mt-5">{{$nproduct->reguler_price}}đ</p>
-                                            <div class="product-rate">
-                                                <div class="product-rating" style="width:90%"></div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    @endforeach
-
                                 </div>
 
                             </div>
+                            <!-- Product sidebar Widget -->
+                            <div class="sidebar-widget product-sidebar  mb-30 p-30 bg-grey border-radius-10">
+                                <div class="widget-header position-relative mb-20 pb-10">
+                                    <h5 class="widget-title mb-10">Sản phẩm Mới</h5>
+                                    <div class="bt-1 border-color-1"></div>
+                                </div>
+                                @foreach($nproducts as $nproduct)
+
+                                <div class="single-post clearfix">
+                                    <div class="image">
+                                        <img src="{{asset('admin/product/'.$nproduct->image)}}" alt="#">
+                                    </div>
+                                    <div class="content pt-10">
+                                        <h5 style="overflow: hidden; text-overflow: ellipsis; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;">
+                                            <a href="{{route('details', ['slug'=>$nproduct->slug])}}">{{$nproduct->name}}</a>
+                                        </h5>
+                                        <p class="price mb-0 mt-5">{{$nproduct->reguler_price}}đ</p>
+                                    </div>
+
+
+                                </div>
+                                @endforeach
+
+                            </div>
+
                         </div>
                     </div>
+                </div>
         </section>
     </main>
 </div>
-
-
-
-<!-- @push('scripts')
-<script>
- var sliderrange = $('#slider-range');
-    var amountprice = $('#amount');
-    $(function() {
-        sliderrange.slider({
-            range: true,
-            min: 0,
-            max: 700,
-            values: [0, 700],
-            slide: function(event, ui) {
-                @this.set('min_price', ui.values[0]);
-                @this.set('max_price', ui.values[1]);
-            }
-        });
-       
-    }); 
-
-</script>
-@endpush -->

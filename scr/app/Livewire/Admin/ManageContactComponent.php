@@ -10,48 +10,74 @@ use Illuminate\Support\Facades\Mail;
 class ManageContactComponent extends Component
 {
     use WithPagination;
-
     protected $paginationTheme = 'bootstrap';
+
     public $pagesize = 5;
     public $processing = false;
+    public $replyMessage = '';
+    public $showReplyModal = false;
+    public $selectedContactId;
 
-    public function changepageSize($size)
+    protected $rules = [
+        'replyMessage' => 'required|min:10'
+    ];
+
+    public function openReplyModal($contactId)
     {
-        $this->pagesize = $size;
-        $this->resetPage();
+        $this->selectedContactId = $contactId;
+        $this->replyMessage = ''; // Reset message khi mở modal mới
+        $this->showReplyModal = true;
     }
+
+    public function closeReplyModal()
+    {
+        $this->showReplyModal = false;
+        $this->replyMessage = '';
+        $this->selectedContactId = null;
+    }
+
 
     public function sendEmail($contactId)
     {
+        $this->validate();
+
         $this->processing = true;
 
         try {
-            // Lấy thông tin liên hệ
             $contact = Contact::find($contactId);
 
             if (!$contact) {
-                session()->flash('error', 'Không tìm thấy thông tin liên hệ.');
+                session()->flash('error', 'Không tìm thấy thông tin liên hệ. Vui lòng kiểm tra lại.');
                 return;
             }
 
-            // Gửi email
-            Mail::raw(
-                "Xin chào {$contact->name},\n\nCảm ơn bạn đã liên hệ với chúng tôi!",
-                function ($message) use ($contact) {
-                    $message->to($contact->email)
-                        ->subject('Phản hồi từ đội ngũ hỗ trợ');
-                }
-            );
+            // Cập nhật nội dung thư với cách diễn đạt lịch sự và chuyên nghiệp hơn
+            $emailContent = "
+            Kính gửi {$contact->name},
+    
+            Cảm ơn bạn đã liên hệ với chúng tôi. Chúng tôi rất vui khi được hỗ trợ bạn.
+    
+            {$this->replyMessage}
+    
+            Nếu bạn có bất kỳ câu hỏi nào thêm, đừng ngần ngại liên hệ lại với chúng tôi. 
+    
+            Trân trọng,
+            Đội ngũ hỗ trợ của chúng tôi
+            ";
 
-            // Cập nhật trạng thái thành "Đã xử lý"
+            Mail::raw($emailContent, function ($message) use ($contact) {
+                $message->to($contact->email)
+                    ->subject('Phản hồi từ Đội ngũ Hỗ trợ');
+            });
+
             $contact->status = 1;
             $contact->save();
 
-            // Thông báo thành công và trigger cập nhật UI
-            session()->flash('success', 'Email đã được gửi thành công!');
+            session()->flash('success', 'Email phản hồi đã được gửi thành công! Chúng tôi sẽ tiếp tục hỗ trợ bạn trong thời gian sớm nhất.');
+            $this->closeReplyModal();
             $this->dispatch('contact-updated');
         } catch (\Exception $e) {
-            session()->flash('error', 'Có lỗi xảy ra: ' . $e->getMessage());
+            session()->flash('error', 'Có lỗi xảy ra khi gửi email: ' . $e->getMessage());
         } finally {
             $this->processing = false;
         }
@@ -145,9 +171,17 @@ class ManageContactComponent extends Component
         }
     }
 
+
+
+
+
+
     public function render()
     {
+
+
         $contacts = Contact::orderBy('created_at', 'desc')->paginate($this->pagesize);
+
         return view('livewire.admin.manage-contact-component', ['contacts' => $contacts]);
     }
 }

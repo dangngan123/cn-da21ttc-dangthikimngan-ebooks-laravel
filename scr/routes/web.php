@@ -23,6 +23,7 @@ use App\Livewire\AboutComponent;
 use App\Livewire\Customer\CustomerOrderDetailsComponent;
 use App\Http\Controllers\Auth\GoogleController;
 use Laravel\Socialite\Facades\Socialite;
+use App\Models\Review;
 
 
 
@@ -77,6 +78,12 @@ Route::get('/about', AboutComponent::class)->name('about');
 
 
 
+Route::post('review/{review}/reply', [DetailsComponent::class, 'reply'])->name('review.reply');
+
+
+Route::get('/notifications', [AdminDashboardComponent::class, 'index'])->name('notifications.index');
+Route::post('/notifications/{id}/read', [AdminDashboardComponent::class, 'markAsRead'])->name('notifications.read');
+Route::post('/notifications/mark-all-read', [AdminDashboardComponent::class, 'markAllAsRead'])->name('notifications.markAllRead');
 
 
 
@@ -84,21 +91,25 @@ Route::get('/about', AboutComponent::class)->name('about');
 
 
 
-Route::get('auth/google', function () {
-    return Socialite::driver('google')->redirect();
-})->name('google.login');
-Route::get('google/callback', [GoogleController::class, 'handleGoogleCallback']);
+// Route::get('auth/google', function () {
+//     return Socialite::driver('google')->redirect();
+// })->name('google.login');
+// Route::get('google/callback', [GoogleController::class, 'handleGoogleCallback']);
+
+// Route::get('redirect/google', [GoogleController::class, 'redirectToGoogle'])->name('google.redirect');
+// Route::get('callback/google', [GoogleController::class, 'handleGoogleCallback'])->name('google.callback');
+
+Route::get('redirect/google', [GoogleController::class, 'redirectToGoogle'])->name('google.redirect');
+Route::get('google/callback', [GoogleController::class, 'handleGoogleCallback'])->name('google.callback');
 
 
 
 
 
-
-
-
-
-
-
+Route::middleware(['admin'])->group(function () {
+    Route::get('/cart', CartComponent::class)->name('cart');
+    Route::get('/checkout', CheckoutComponent::class)->name('checkout');
+});
 
 
 

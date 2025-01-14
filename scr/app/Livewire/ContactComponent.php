@@ -57,9 +57,11 @@ class ContactComponent extends Component
             session()->flash('error', 'Có lỗi xảy ra: ' . $e->getMessage());
         }
     }
+    
 
     public function render()
     {
+        
         return view('livewire.contact-component');
     }
 }

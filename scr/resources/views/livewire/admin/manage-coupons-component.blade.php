@@ -160,7 +160,7 @@
             <div class="table-responsive">
                 <table class="table">
                     <thead>
-                        <tr>
+                        <tr class="text-center">
                             <th>STT</th>
                             <th>Mã giảm</th>
                             <th>Loại giảm</th>
@@ -174,9 +174,9 @@
                     <tbody>
                         @forelse($coupons as $index => $coupon)
                         <tr wire:key="coupon-{{ $coupon->id }}">
-                            <td>{{$index+$coupons->firstItem()}}</td>
-                            <td>{{$coupon->coupon_code}}</td>
-                            <td>
+                            <td class="text-center">{{$index+$coupons->firstItem()}}</td>
+                            <td class="text-center">{{$coupon->coupon_code}}</td>
+                            <td class="text-center">
                                 @if($coupon->coupon_type === 'fixed')
                                 Cố định
                                 @elseif($coupon->coupon_type === 'percent')
@@ -185,11 +185,11 @@
                                 Không xác định
                                 @endif
                             </td>
-                            <td>{{$coupon->coupon_value}}</td>
+                            <td class="text-center">{{$coupon->coupon_value}}</td>
 
-                            <td>{{$coupon->cart_value}}</td>
-                            <td>{{$coupon->end_date}}</td>
-                            <td>
+                            <td class="text-center">{{$coupon->cart_value}}</td>
+                            <td class="text-center">{{$coupon->end_date}}</td>
+                            <td class="text-center">
                                 @if(!$coupon->is_used)
                                 <button class=" btn-success btn-sm" wire:click="showEditCoupon({{ $coupon->id }})">
                                     Chỉnh sửa

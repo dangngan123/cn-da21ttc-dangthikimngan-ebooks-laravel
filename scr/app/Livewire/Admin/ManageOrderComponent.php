@@ -152,38 +152,37 @@ class ManageOrderComponent extends Component
     public $statusFilter = '';
 
     public $page = 1; // Thêm thuộc tính này
+    public function updatedStatusFilter()
+    {
+        $this->resetPage();
+    }
 
 
     public function render()
     {
         $query = Order::query();
 
-        // Áp dụng bộ lọc trạng thái nếu có
-        if ($this->statusFilter == 'processing') {
-            $query->where('status', 'processing');
-        } elseif ($this->statusFilter == 'shipped') {
-            $query->where('status', 'shipped');
-        } elseif ($this->statusFilter == 'delivered') {
-            $query->where('status', 'delivered');
-        } elseif ($this->statusFilter == 'cancelled') {
-            $query->where('status', 'cancelled');
+        // Kiểm tra bộ lọc trạng thái
+        if ($this->statusFilter) {
+            $query->where('status', $this->statusFilter);
         }
 
-    
+        // Kiểm tra tìm kiếm
+        if ($this->search) {
+            $query->where(function ($subQuery) {
+                $subQuery->where('id', 'like', '%' . $this->search . '%')
+                    ->orWhere('name', 'like', '%' . $this->search . '%')
+                    ->orWhere('email', 'like', '%' . $this->search . '%')
+                    ->orWhere('phone', 'like', '%' . $this->search . '%')
+                    ->orWhere('status', 'like', '%' . $this->search . '%');
+            });
+        }
 
-        $orders = Order::where(function ($query) {
-            $query->where('id', 'like', '%' . $this->search . '%')
-                ->orWhere('name', 'like', '%' . $this->search . '%')
-                ->orWhere('email', 'like', '%' . $this->search . '%')
-                ->orWhere('phone', 'like', '%' . $this->search . '%')
-                ->orWhere('status', 'like', '%' . $this->search . '%');
-        })
-            ->orderByRaw("FIELD(status, 'canceled', 'delivered') ASC")
+        // Phân trang và sắp xếp
+        $orders = $query
+            ->orderByRaw("FIELD(status, 'cancelled', 'delivered', 'shipped', 'processing') ASC")
             ->orderBy('created_at', 'desc')
             ->paginate($this->pagesize);
-
-        $this->resetPage();
-
 
         return view('livewire.admin.manage-order-component', ['orders' => $orders]);
     }

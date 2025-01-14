@@ -42,9 +42,9 @@
                                 <select class="form-control" wire:model.live="statusFilter" style="border-radius: 5px; background-color: #f1f1f1; color: #333; font-size: 14px; padding-left: 30px;">
                                     <option value="">Tất cả</option>
                                     <option value="processing">Đang xử lý</option>
-                                    <option value="shipped">Đã vận chuyểnchuyển</option>
+                                    <option value="shipped">Đang vận chuyển</option>
                                     <option value="delivered">Đã giao hàng</option>
-                                    <option value="cancelled">Đã bị hủy</option>
+                                    <option value="canceled">Đã bị hủy</option>
                                 </select>
                                 <!-- Đặt icon vào vị trí tuyệt đối bên trong -->
                                 <i class="fa-solid fa-filter" style="position: absolute; left: 10px; top: 50%; transform: translateY(-50%); font-size: 18px; color: #007bff;"></i>
@@ -156,7 +156,8 @@
                                         Đã bị hủy
                                         @break
                                         @default
-                                        Đã đặt hàng
+                                        @case('processing')
+                                        Đang xử lý
                                         @endswitch
                                     </button>
                                     @if (!in_array($order->status, ['canceled', 'delivered']))

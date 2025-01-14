@@ -7,6 +7,9 @@ use App\Models\Order;
 use Carbon\Carbon;
 use App\Models\Review;
 
+
+use Illuminate\Support\Facades\Auth;
+
 use Livewire\WithPagination;
 
 class AdminDashboardComponent extends Component
@@ -14,6 +17,9 @@ class AdminDashboardComponent extends Component
     use WithPagination;
     public $pagesize = 5;
     protected $paginationTheme = 'bootstrap';
+
+
+
 
     public function render()
     {
@@ -40,9 +46,15 @@ class AdminDashboardComponent extends Component
             ->whereDate('created_at', Carbon::today())->sum('total');
         // Lấy tổng số đơn hàng mỗi ngày trong tuần (7 ngày gần nhất)
         $ordersPerDay = [];
+        $today = Carbon::today();
+        $startOfWeek = $today->copy()->startOfWeek(); // Mặc định là thứ 2
+
         for ($i = 0; $i < 7; $i++) {
-            $day = Carbon::today()->subDays($i);
-            $ordersPerDay[] = Order::whereDate('created_at', $day)->count();
+            $currentDate = $startOfWeek->copy()->addDays($i);
+            $ordersPerDay[] = [
+                'date' => $currentDate->format('l'), // Tên thứ trong tuần
+                'count' => Order::whereDate('created_at', $currentDate)->count()
+            ];
         }
         return view('livewire.admin.admin-dashboard-component', [
             'orders' => $orders,

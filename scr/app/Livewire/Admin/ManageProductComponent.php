@@ -83,17 +83,27 @@ class ManageProductComponent extends Component
         $product = Product::find($this->delete_id);
 
         if ($product) {
-            $image_path = public_path('admin/product/' . $product->image);
-            if (file_exists($image_path)) {
-                unlink($image_path);
-            }
-            // Delete additional images
-            $additional_images = explode(',', $product->images);
-            foreach ($additional_images as $additional_image) {
-                $additional_image_path = public_path('admin/product/' . $additional_image);
-                if (file_exists($additional_image_path)) {
-                    unlink($additional_image_path);
+            // Xóa ảnh chính
+            try {
+                $image_path = public_path('admin/product/' . $product->image);
+                if (file_exists($image_path)) {
+                    unlink($image_path);
                 }
+            } catch (\Exception $e) {
+                // Bỏ qua lỗi nếu file không tồn tại
+            }
+
+            // Xóa các ảnh phụ
+            try {
+                $additional_images = explode(',', $product->images);
+                foreach ($additional_images as $additional_image) {
+                    $additional_image_path = public_path('admin/product/' . $additional_image);
+                    if (file_exists($additional_image_path)) {
+                        unlink($additional_image_path);
+                    }
+                }
+            } catch (\Exception $e) {
+                // Bỏ qua lỗi nếu file không tồn tại
             }
             $product->delete();
             flash('Sản phẩm đã được xóa thành công.');
@@ -337,27 +347,47 @@ class ManageProductComponent extends Component
     //Xóa nhiều slider
     public function selecteDelete()
     {
-        foreach ($this->selectedItems as $item) {
-            $products = product::find($item);
-            $image_path = public_path('admin/product/' . $products->image);
-            if (file_exists($image_path)) {
-                unlink($image_path);
-            }
+        try {
+            foreach ($this->selectedItems as $item) {
+                $products = product::find($item);
 
-            // Delete additional images
-            $additional_images = explode(',', $products->images);
-            foreach ($additional_images as $additional_image) {
-                $additional_image_path = public_path('admin/product/' . $additional_image);
-                if (file_exists($additional_image_path)) {
-                    unlink($additional_image_path);
+                if ($products) {
+                    // Xóa ảnh chính
+                    try {
+                        $image_path = public_path('admin/product/' . $products->image);
+                        if (file_exists($image_path)) {
+                            unlink($image_path);
+                        }
+                    } catch (\Exception $e) {
+                        // Bỏ qua lỗi khi không tìm thấy file ảnh chính
+                    }
+
+                    // Xóa các ảnh phụ
+                    try {
+                        $additional_images = explode(',', $products->images);
+                        foreach ($additional_images as $additional_image) {
+                            if (!empty($additional_image)) {
+                                $additional_image_path = public_path('admin/product/' . $additional_image);
+                                if (file_exists($additional_image_path)) {
+                                    unlink($additional_image_path);
+                                }
+                            }
+                        }
+                    } catch (\Exception $e) {
+                        // Bỏ qua lỗi khi không tìm thấy file ảnh phụ
+                    }
+
+                    // Xóa sản phẩm trong database
+                    $products->delete();
                 }
             }
 
-            $products->delete();
+            $this->selectAll = false;
+            $this->selectedItems = [];
+            flash('Sản phẩm đã được xóa thành công.');
+        } catch (\Exception $e) {
+            flash('Có lỗi xảy ra khi xóa sản phẩm: ' . $e->getMessage())->error();
         }
-        $this->selectAll = False;
-        $this->selectedItems = [];
-        flash('Sản phẩm đã được xóa thành công.');
     }
     // //hoạt động nhiều slider
     // public function selecteActive($value)

@@ -9,20 +9,27 @@ use Symfony\Component\HttpFoundation\Response;
 
 class Admin
 {
-    /**
-     * Handle an incoming request.
-     *
-     * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
-     */
     public function handle(Request $request, Closure $next): Response
     {
-        // Kiểm tra xem người dùng có phải là admin không
-        if (Auth::check() && Auth::user()->utype !== 'admin') {
-            // Nếu không phải là admin, chuyển hướng về trang login
-            return redirect()->route('login');
+
+
+
+        // Kiểm tra nếu người dùng đã đăng nhập
+        if (Auth::check()) {
+            // Kiểm tra nếu là admin
+            if (Auth::user()->utype === 'admin') {
+                // Chặn truy cập cart, checkout và các action thêm/xóa giỏ hàng
+                if (
+                    $request->routeIs('cart') ||
+                    $request->routeIs('checkout') || // chặn thêm vào giỏ
+                    $request->is('*/cart/*') ||         // chặn các action liên quan giỏ hàng
+                    strpos($request->path(), 'cart') !== false  // chặn bất kỳ URL nào có chứa 'cart'
+                ) {
+                    return back()->with('error', 'Admin không được phép truy cập các chức năng mua sắm');
+                }
+            }
         }
 
-        // Tiếp tục xử lý yêu cầu nếu người dùng là admin
         return $next($request);
     }
 }

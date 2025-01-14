@@ -27,7 +27,7 @@ class CustomerAccountComponent extends Component
         'email' => 'required|email',
         'current_password' => 'required_with:password',
         'password' => 'nullable|min:8|confirmed',
-        'new_avatar' => 'nullable|image|max:1024', // Tối đa 1MB
+       
     ];
 
     protected $messages = [
@@ -42,7 +42,7 @@ class CustomerAccountComponent extends Component
         $this->user = Auth::user();
         $this->name = $this->user->name;
         $this->email = $this->user->email;
-        $this->avatar = $this->user->avatar;
+     
     }
 
     public function updateProfile()
@@ -58,28 +58,6 @@ class CustomerAccountComponent extends Component
         // Cập nhật thông tin cơ bản
         $this->user->name = $this->name;
         $this->user->email = $this->email;
-        $this->user->additional_info = $this->additional_info;
-
-
-        // Xử lý upload avatar
-        if ($this->new_avatar) {
-            // Xóa avatar cũ nếu có
-            if ($this->user->avatar && file_exists(public_path('customer/avatar/' . $this->user->avatar))) {
-                unlink(public_path('customer/avatar/' . $this->user->avatar));
-            }
-            // Upload avatar mới
-            $avatarName = time() . '.' . $this->new_avatar->getClientOriginalExtension();
-            $this->user->avatar = $avatarName;
-            $this->new_avatar->move(public_path('customer/avatar'), $avatarName);
-        } elseif ($this->avatar) {
-            $new_avatar = time() . '.' . $this->avatar->extension();
-            $this->user->avatar = $new_avatar;
-            $manager = new ImageManager(new Driver());
-            $image = $manager->read($this->avatar);
-            $image->resize(400, 400);
-            $image->toPng()->save(base_path('customer/avatar/' . $new_avatar));
-        }
-
         $this->user->save();
 
         session()->flash('message', 'Cập nhật thông tin thành công!');

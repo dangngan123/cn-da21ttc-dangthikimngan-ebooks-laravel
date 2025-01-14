@@ -10,6 +10,7 @@ use Carbon\Carbon;
 use Gloudemans\Shoppingcart\Facades\Cart;
 use Illuminate\Support\Facades\DB;
 use App\Models\Saletimer;
+use App\Models\Review;
 use Illuminate\Support\Facades\Auth;
 
 
@@ -30,6 +31,13 @@ class HomeComponent extends Component
     public function loadMore()
     {
         $this->count += 12;
+    }
+
+
+    public function showAdminAlert()
+    {
+        // Lưu thông báo vào session
+        flash()->error('Lỗi: Admin không thể thêm sản phẩm vào giỏ hàng!');
     }
     public function render()
     {
@@ -68,6 +76,12 @@ class HomeComponent extends Component
         //     Cart::instance('cart')->restore(Auth::user()->email);
         //     Cart::instance('wishlist')->restore(Auth::user()->email);
         // }
+        $productReviews = Review::whereIn('order_item_id', function ($query) use ($product) {
+            $query->select('id')
+                ->from('order_items')
+                ->where('product_id', $product->id);
+        })->get();
+
 
         return view('livewire.home-component', [
             'sliders' => $sliders,
@@ -78,6 +92,8 @@ class HomeComponent extends Component
             'bestproducts' => $bestproducts,
             'saletimerproducts' => $saletimerproducts,
             'saletimer' => $saletimer,
+            'productReviews' => $productReviews,
+
         ]);
     }
 }

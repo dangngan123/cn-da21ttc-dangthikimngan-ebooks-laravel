@@ -26,6 +26,11 @@ class CustomerAddressComponent extends Component
     public $delete_id;
     public $shipping;
     public $status;
+    public function showShipingModal()
+    {
+        $this->dispatch('shipping-modal');
+    }
+
 
     public function updated($fields)
     {
@@ -68,10 +73,31 @@ class CustomerAddressComponent extends Component
         $shipping->status = $status;  // Sử dụng giá trị của $status
         $shipping->save();
 
-        $this->reset();
-        $this->dispatch('hide-shipping-modal');
+        $this->resetForm();
+        $this->dispatch('shipping-modal');
         flash('Đã thêm địa chỉ giao hàng thành công!');
     }
+
+    public function resetForm()
+    {
+        $this->address_type = '';
+        $this->name = '';
+        $this->status = '';
+        $this->phone;
+        $this->province = '';
+        $this->district = '';
+        $this->ward = '';
+        $this->address = '';
+        $this->shipping_id = '';
+        $this->status = '';
+        $this->titleForm = "Thêm địa chỉ";
+        $this->resetValidation();
+    }
+
+
+
+
+
 
 
     // Lắng nghe sự kiện từ JavaScript (sự kiện 'deleteConfirmed')
@@ -99,20 +125,15 @@ class CustomerAddressComponent extends Component
             $this->dispatch('DeleteFailed');
         }
     }
-
-    public function showShipingModal()
+    public $editForm = false;
+    public $titleForm = "Thêm danh mục";
+    public $sid;
+    public function showEditShipping($id)
     {
-        $this->dispatch('add-show-shipping-modal');
-    }
+        $this->dispatch('shipping-modal');
+        $this->titleForm = "Chỉnh sửa địa chỉ";
+        $this->editForm = true;
 
-    public function ShowUpdateShippingInfo($id)
-    {
-        $this->dispatch('show-update-shipping-modal');
-        $this->updateShipInfo($id);
-    }
-
-    public function updateShipInfo($id)
-    {
         $shipping = Shiping::where('id', $id)->first();
         $this->address_type = $shipping->address_type;
         $this->name = $shipping->name;
@@ -122,9 +143,17 @@ class CustomerAddressComponent extends Component
         $this->district = $shipping->district;
         $this->ward = $shipping->ward;
         $this->address = $shipping->address;
-        $shipping->status = $this->status;
         $this->shipping_id = $shipping->id;
+        $this->status = $shipping->status;
+        $this->sid = $shipping->id;
     }
+
+
+
+
+
+
+
 
     public function updateShipping()
     {
@@ -135,6 +164,7 @@ class CustomerAddressComponent extends Component
             'province' => 'required',
             'district' => 'required',
             'ward' => 'required',
+
             'address' => 'required',
         ]);
 
@@ -150,11 +180,13 @@ class CustomerAddressComponent extends Component
         $shipping->district = $this->district;
         $shipping->ward = $this->ward;
         $shipping->address = $this->address;
-        $shipping->status = $status; // Sử dụng giá trị của $status
+        $shipping->status = $status;
         $shipping->save();
 
-        $this->reset();
-        $this->dispatch('update-hide-shipping-modal');
+
+
+        $this->dispatch('shipping-modal');
+        $this->resetForm();
         flash('Đã cập nhật địa chỉ giao hàng thành công!');
     }
 

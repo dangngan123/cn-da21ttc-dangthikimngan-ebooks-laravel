@@ -7,7 +7,7 @@
             <div class="table-responsive">
                 <table class="table">
                     <thead>
-                        <tr>
+                        <tr class="text-center">
                             <th>STT</th>
                             <th>Mã khách hàng</th>
                             <th>Tên khách hàng</th>
@@ -19,7 +19,7 @@
                     <tbody>
                         @forelse($users as $index=> $user)
                         @if($user->utype !== 'admin') {{-- Kiểm tra nếu không phải admin --}}
-                        <tr>
+                        <tr class="text-center">
                             <td>{{$index+$users->firstItem()}}</td>
                             <td>#{{$user->id}}</td>
                             <td>{{$user->name}}</td>

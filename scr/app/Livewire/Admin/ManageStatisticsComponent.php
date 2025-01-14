@@ -14,13 +14,39 @@ class ManageStatisticsComponent extends Component
     public $endDate;
     public $filterType = 'custom';
 
+    protected $listeners = ['dateRangeUpdated' => 'updateDateRange'];
+
     public function mount()
     {
         $this->startDate = now()->subWeek()->format('Y-m-d');
         $this->endDate = now()->format('Y-m-d');
     }
+    public function updatedFilterType($value)
+    {
+        switch ($value) {
+            case 'today':
+                $this->startDate = now()->format('Y-m-d');
+                $this->endDate = now()->format('Y-m-d');
+                break;
+            case 'week':
+                $this->startDate = now()->startOfWeek()->format('Y-m-d');
+                $this->endDate = now()->endOfWeek()->format('Y-m-d');
+                break;
+            case 'month':
+                $this->startDate = now()->startOfMonth()->format('Y-m-d');
+                $this->endDate = now()->endOfMonth()->format('Y-m-d');
+                break;
+            case 'custom':
+            default:
+                // Không thay đổi startDate và endDate trong trường hợp tùy chỉnh
+                break;
+        }
+    }
 
-    
+
+
+
+
     public function render()
     {
         $orders = Order::whereBetween('created_at', [

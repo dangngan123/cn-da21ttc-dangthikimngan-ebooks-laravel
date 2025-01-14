@@ -7,6 +7,7 @@ use App\Models\Category;
 use App\Models\Product;
 use Livewire\WithPagination;
 use Illuminate\Support\Facades\Log;
+use App\Models\Review;
 
 class ShopComponent extends Component
 {
@@ -104,11 +105,12 @@ class ShopComponent extends Component
         $products = $query->paginate($this->pagesize);
 
         $nproducts = Product::latest()->take(3)->get();
-
+        $reviews = Review::all();
         return view('livewire.shop-component', [
             'categories' => $categories,
             'products' => $products,
-            'nproducts' => $nproducts
+            'nproducts' => $nproducts,
+            'reviews' => $reviews
         ]);
     }
 }

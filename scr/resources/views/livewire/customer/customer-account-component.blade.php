@@ -16,6 +16,14 @@
 
                 <button type="submit" class="btn btn-primary">Cập nhật</button>
             </form>
+            <div>
+                @if(session()->has('message'))
+                <div class="alert alert-success">
+                    {{ session('message') }}
+                </div>
+                @endif
+                <!-- Your form and other content goes here -->
+            </div>
         </div>
     </div>
 

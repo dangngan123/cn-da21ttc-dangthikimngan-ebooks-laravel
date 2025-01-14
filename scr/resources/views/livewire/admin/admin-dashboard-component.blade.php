@@ -1,13 +1,41 @@
 <div>
     <main class="main">
         <div class="page-header breadcrumb-wrap">
-            <div class="container">
+            <div class="container d-flex justify-content-between align-items-center">
                 <div class="breadcrumb">
-                    <a href="index.html" rel="nofollow">Home</a>
+                    <a href="{{route('home')}}">Home</a>
                     <span></span> My Account
                 </div>
+
             </div>
         </div>
+
+        <!-- Thêm CSS -->
+        <style>
+            .notification-dropdown {
+                box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            }
+
+            .notification-item {
+                padding: 10px 15px;
+                border-bottom: 1px solid #eee;
+                cursor: pointer;
+            }
+
+            .notification-item:hover {
+                background-color: #f8f9fa;
+            }
+
+            .notification-item.unread {
+                background-color: #f0f7ff;
+            }
+
+            .notification-item .time {
+                font-size: 0.8em;
+                color: #6c757d;
+            }
+        </style>
+
         <section class="pt-10 pb-10">
             <div class="container">
                 <div class="row">
@@ -51,9 +79,6 @@
                                             <a class="nav-link" id="statistics-tab" data-bs-toggle="tab" href="#statistics" role="tab" aria-controls="statistics" aria-selected="true"><i class="fa-solid fa-chart-line"></i> Thống kê</a>
                                         </li>
 
-                                        <li class="nav-item">
-                                            <a class="nav-link" href="login.html"><i class="fi-rs-sign-out mr-10"></i>Logout</a>
-                                        </li>
 
                                     </ul>
                                 </div>
@@ -130,7 +155,7 @@
                                                             <div class="row">
                                                                 <div class="col-xs-8 text-left">
                                                                     <span class="icon-stat-label">Tổng doanh thu</span>
-                                                                    <span class="icon-stat-value">{{$totalRevenue}}đ</span>
+                                                                    <span class="icon-stat-value">{{ number_format($totalRevenue,2) }} đ</span>
                                                                 </div>
                                                                 <div class="col-xs-4 text-center">
                                                                     <i class="fa fa-dollar icon-stat-visual bg-primary"></i>
@@ -166,7 +191,7 @@
                                                             <div class="row">
                                                                 <div class="col-xs-8 text-left">
                                                                     <span class="icon-stat-label">Doanh thu hôm nay</span>
-                                                                    <span class="icon-stat-value">{{$todayRevenue}}đ</span>
+                                                                    <span class="icon-stat-value">{{ number_format($todayRevenue,2) }} đ</span>
                                                                 </div>
                                                                 <div class="col-xs-4 text-center">
                                                                     <i class="fa fa-dollar icon-stat-visual bg-primary"></i>
@@ -537,20 +562,32 @@
 
     document.addEventListener('DOMContentLoaded', function() {
         // Dữ liệu từ Livewire
-        const ordersPerDay = @json($ordersPerDay); // Tổng số đơn hàng mỗi ngày trong tuần
+        const ordersData = @json($ordersPerDay);
 
-        // Các ngày trong tuần
-        const daysOfWeek = ['Chủ nhật', 'Thứ 2', 'Thứ 3', 'Thứ 4', 'Thứ 5', 'Thứ 6', 'Thứ 7'];
+        // Map tên tiếng Anh sang tiếng Việt
+        const dayMapping = {
+            'Monday': 'Thứ 2',
+            'Tuesday': 'Thứ 3',
+            'Wednesday': 'Thứ 4',
+            'Thursday': 'Thứ 5',
+            'Friday': 'Thứ 6',
+            'Saturday': 'Thứ 7',
+            'Sunday': 'Chủ nhật'
+        };
 
-        // Biểu đồ
+        // Chuyển đổi dữ liệu
+        const labels = ordersData.map(item => dayMapping[item.date]);
+        const data = ordersData.map(item => item.count);
+
+        // Vẽ biểu đồ
         const ctx = document.getElementById('ordersPerDayChart').getContext('2d');
         new Chart(ctx, {
             type: 'bar',
             data: {
-                labels: daysOfWeek, // Các ngày trong tuần
+                labels: labels,
                 datasets: [{
                     label: 'Tổng số đơn hàng',
-                    data: ordersPerDay, // Số lượng đơn hàng mỗi ngày
+                    data: data,
                     backgroundColor: 'rgba(75, 192, 192, 0.7)',
                     borderColor: 'rgba(75, 192, 192, 1)',
                     borderWidth: 1
@@ -560,15 +597,23 @@
                 responsive: true,
                 plugins: {
                     legend: {
-                        display: false // Không hiển thị legend
+                        display: false
                     },
                     tooltip: {
-                        enabled: true // Hiển thị tooltip
+                        enabled: true,
+                        callbacks: {
+                            label: function(context) {
+                                return `Số đơn hàng: ${context.raw}`;
+                            }
+                        }
                     }
                 },
                 scales: {
                     y: {
-                        beginAtZero: true // Đảm bảo trục y bắt đầu từ 0
+                        beginAtZero: true,
+                        ticks: {
+                            stepSize: 1
+                        }
                     }
                 }
             }

@@ -1624,11 +1624,11 @@ label {
 }
 
 .hero-slider-1 {
-  height: 500px;
+  height: 400px;
 }
 
 .hero-slider-1 img {
-  max-height: 500px;
+  max-height: 400px;
 }
 
 .hero-slider-1 .single-slider-img-1 {
@@ -1644,7 +1644,7 @@ label {
 
 .hero-slider-1 .single-slider-img-1 .slider-1-2 {
   position: absolute;
-  bottom: 20px;
+  bottom: 110px;
   right: 0;
 }
 
@@ -5192,7 +5192,7 @@ h6.post-title {
 }
 
 .header-info > ul > li a {
-  color: #1a1a1a;
+  color: #ffffff;
   font-weight: 500;
 }
 
@@ -5865,6 +5865,7 @@ h6.post-title {
 .header-bottom .header-action-right a span.pro-count {
   background-color: #F15412;
   color: #fff;
+  z-index: 1049;
 }
 
 .search-style-3 form {
@@ -6412,7 +6413,7 @@ h6.post-title {
 .header-style-1 .header-top-ptb-1 {
   padding: 13px 0;
   border-bottom: 3px solid #39b4ac;
-  background-color: #d8f4e2;
+  background-color: #bb1010;
   background-image: none;
 }
 
@@ -9896,7 +9897,7 @@ span.fi-rs-apps {
 .header-style-1 .header-top-ptb-1 {
 	padding: 13px 0;
 	border-bottom: 1px solid #737975;
-	background-color: #f4f4d8;
+	background-color:#F15412;
 	background-image: none;
 }
 

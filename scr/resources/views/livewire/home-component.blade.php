@@ -1,22 +1,27 @@
 <div>
 
     <main class="main">
-        <section class="home-slider position-relative pt-20" wire:ignore>
+        <section class="home-slider" wire:ignore style="background-color: rgb(236, 236, 236);">
             <div class="hero-slider-1 dot-style-1 dot-style-1-position-1">
-
                 @foreach($sliders as $slider)
                 <div class="single-hero-slider single-animation-wrap">
                     <div class="container">
-                        <div class="row align-items-center slider-animated-1">
-                            <div class="col-lg-5 col-md-6">
-                                <div class="hero-slider-content-2">
-                                    <h4 class="animated">{{$slider->top_title}}</h4>
-                                    <h2 class="animated fw-bold">{{$slider->title}}</h2>
-                                    <h1 class="animated fw-bold text-7">{{$slider->sub_title}}</h1>
-                                    <p class="animated">Tiết kiệm hơn với mua sách giảm tới {{$slider->offer}}% </p>
-                                    <a class="animated btn btn-brush btn-brush-2" href="{{$slider->link}}"> Khám Phá Ngay </a>
+                        <div class="row align-items-center justify-content-center slider-animated-1">
+                            <div class="col-lg-5 col-md-6 d-flex flex-column justify-content-center align-items-center">
+                                <div class="hero-slider-content-2 text-center">
+                                    <div class="circle-text">
+                                        <h3 class="animated">{{$slider->top_title}}</h3>
+                                        <h4 class="animated fw-bold" style="font-size: 20px; color:rgb(75, 143, 99); font-weight: bold; margin: 0;">{{$slider->title}}</h4>
+                                        <br>
+                                        <h4 class="animated" style="color:rgb(24, 24, 24); font-weight: bold; margin: 0;">{{$slider->sub_title}}</h4>
+                                        <br>
+                                        <h4 class="animated" style="font-size: 20px; color:rgb(227, 61, 1); font-weight: bold; margin: 0;">
+                                            Tiết kiệm hơn {{$slider->offer}}%
+                                        </h4>
+                                        <br>
+                                    </div>
+                                    <a class="animated btn" href="{{$slider->link}}">Khám Phá Ngay</a>
                                 </div>
-
                             </div>
                             <div class="col-lg-7 col-md-6">
                                 <div class="single-slider-img single-slider-img-1">
@@ -27,11 +32,13 @@
                     </div>
                 </div>
                 @endforeach
-
             </div>
+            <br>
             <div class="slider-arrow hero-slider-1-arrow"></div>
         </section>
-        <section class="featured section-padding position-relative">
+
+
+        <section class="featured section-padding position-relative" wire:ignore>
             <div class="container">
                 <div class="row">
                     <div class="col-lg-2 col-md-4 mb-md-3 mb-lg-0">
@@ -178,9 +185,10 @@
             }
         </style>
 
+        <!-- Sản phẩm giảm giá Flash Sale -->
         @if($saletimerproducts->count() > 0 && $saletimer->status == 1 && $saletimer->sale_timer > Carbon\Carbon::now())
         <div class="container">
-            <div class="flash-sale-section">
+            <div class="flash-sale-section" style="border: 3px solidrgb(209, 39, 39); padding: 20px; border-radius: 10px; background-color:solidrgb(209, 39, 39);">
                 <div class="flash-sale-header">
                     <div class="flash-sale-text">
                         <span>FLA</span>
@@ -219,9 +227,7 @@
                                         <h2 style="font-size: 13px; margin: 5px 0; text-align: left; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">
                                             <a href="{{route('details', ['slug'=>$saletimerproduct->slug])}}">{{$saletimerproduct->name}}</a>
                                         </h2>
-                                        <div class="rating-result" title="90%" style="font-size: 12px;">
-                                            <span></span>
-                                        </div>
+
                                         <div class="product-price" style="font-size: 12px;">
                                             <span>{{$saletimerproduct->sale_price}}</span>
                                             <span class="old-price" style="text-decoration: line-through; color: #999;">
@@ -375,13 +381,13 @@
 
         <!-- Bán chạy nhất -->
         <section class="popular-categories section-padding" wire:ignore>
-            <div class="container wow fadeIn animated">
+            <div class="container wow fadeIn animated" style="border: 1px solid #ccc; padding: 20px; border-radius: 10px; background-color: #ffffff; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
                 <h3 class="section-title mb-20"><span style="font-size: 22px">BEST </span>SELLER</h3>
                 <div class="carausel-6-columns-cover position-relative">
                     <div class="slider-arrow slider-arrow-2 carausel-6-columns-arrow" id="carausel-6-columns-3-arrows"></div>
                     <div class="carausel-6-columns carausel-arrow-center" id="carausel-6-columns-3">
                         @foreach($bestproducts as $bestproduct)
-                        <div class="product-cart-wrap small hover-up" style="width: 150px; margin: 5px; padding: 10px; font-size: 12px;">
+                        <div class="product-cart-wrap small hover-up" style="width: 150px; margin: 5px; padding: 10px; font-size: 12px; border: 1px solid #e0e0e0; border-radius: 8px; background-color: #fafafa; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);">
                             <div class="product-img-action-wrap" style="height: 150px; overflow: hidden;">
                                 <div class="product-img product-img-zoom">
                                     <a href="{{route('details', ['slug'=>$bestproduct->slug])}}">
@@ -395,13 +401,9 @@
                                 </div>
                             </div>
                             <div class="product-content-wrap" style="text-align: center;">
-                                <h2 style="font-size: 13px; margin: 5px 0; text-align: left; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">
+                                <h2 style="font-size: 13px; margin: 5px 0; text-align: left; display: -webkit-box; -webkit-line-clamp: 1; -webkit-box-orient: vertical; overflow: hidden;">
                                     <a href="{{route('details', ['slug'=>$bestproduct->slug])}}">{{$bestproduct->name}}</a>
                                 </h2>
-
-                                <div class="rating-result" title="90%" style="font-size: 12px;">
-                                    <span></span>
-                                </div>
                                 <div class="product-price" style="font-size: 12px;">
                                     <span>{{$bestproduct->sale_price}} </span>
                                     <span class="old-price" style="text-decoration: line-through; color: #999;">{{$bestproduct->reguler_price}}</span>
@@ -413,15 +415,17 @@
                 </div>
             </div>
         </section>
+
+
         <!-- Sách mới -->
         <section class="popular-categories section-padding" wire:ignore>
-            <div class="container wow fadeIn animated">
+            <div class="container wow fadeIn animated" style="border: 1px solid #ccc; padding: 20px; border-radius: 10px; background-color: #ffffff; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
                 <h3 class="section-title"> <span style="font-size: 22px">SÁCH </span>MỚI</h3>
                 <div class="carausel-6-columns-cover position-relative">
                     <div class="slider-arrow slider-arrow-2 carausel-6-columns-arrow" id="carausel-6-columns-2-arrows"></div>
                     <div class="carausel-6-columns carausel-arrow-center" id="carausel-6-columns-2">
                         @foreach($nproducts as $nproduct)
-                        <div class="product-cart-wrap small hover-up" style="width: 150px; margin: 5px; padding: 10px; font-size: 12px;">
+                        <div class="product-cart-wrap small hover-up" style="width: 150px; margin: 5px; padding: 10px; font-size: 12px; border: 1px solid #e0e0e0; border-radius: 8px; background-color: #fafafa; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);">
                             <div class="product-img-action-wrap" style="height: 150px; overflow: hidden;">
                                 <div class="product-img product-img-zoom">
                                     <a href="{{route('details', ['slug'=>$nproduct->slug])}}">
@@ -435,12 +439,9 @@
                                 </div>
                             </div>
                             <div class="product-content-wrap" style="text-align: center;">
-                                <h2 style="font-size: 13px; margin: 5px 0; text-align: left; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">
+                                <h2 style="font-size: 13px; margin: 5px 0; text-align: left; display: -webkit-box; -webkit-line-clamp: 1; -webkit-box-orient: vertical; overflow: hidden;">
                                     <a href="{{route('details', ['slug'=>$nproduct->slug])}}">{{$nproduct->name}}</a>
                                 </h2>
-                                <div class="rating-result" title="90%" style="font-size: 12px;">
-                                    <span></span>
-                                </div>
                                 <div class="product-price" style="font-size: 12px;">
                                     <span>{{$nproduct->sale_price}} </span>
                                     <span class="old-price" style="text-decoration: line-through; color: #999;">{{$nproduct->reguler_price}}</span>
@@ -453,24 +454,21 @@
             </div>
         </section>
 
-        <section class="popular-categories section-padding mt-15 mb-25" wire:ignore>
-            <div class="container wow fadeIn animated">
-                <h3 class="section-title mb-20"><span style="font-size: 22px">DANH SÁCH </span> NỔI BẬT</h3>
-                <div class="carausel-6-columns-cover position-relative">
-                    <div class="slider-arrow slider-arrow-2 carausel-6-columns-arrow" id="carausel-6-columns-arrows"></div>
-                    <div class="carausel-6-columns" id="carausel-6-columns">
-                        @foreach($pcategories as $pcategory)
-                        <div class="card-1">
-                            <figure class=" img-hover-scale overflow-hidden">
-                                <a href="{{route('product.category', ['slug'=>$pcategory->slug])}}"><img src="{{asset('admin/category/'.$pcategory->image)}}" alt=""></a>
-                            </figure>
-                            <h5 class="small"><a href="{{route('product.category', ['slug'=>$pcategory->slug])}}">{{$pcategory->name}}</a></h5>
-                        </div>
-                        @endforeach
-                    </div>
+
+
+        <div class="container" wire:ignore>
+            <div class="courses-grid" id="clients">
+                @foreach($categories->reverse()->take(4) as $category) <!-- Lấy 4 danh mục cuối cùng -->
+                <div class="item">
+                    <a target="_blank" href="{{route('product.category', ['slug'=>$category->slug])}}">
+                        <img src="{{asset('admin/category/'.$category->image)}}" alt="{{$category->name}}">
+                        <div class="course-name"><b>{{$category->name}}</b></div>
+                    </a>
                 </div>
+                @endforeach
             </div>
-        </section>
+        </div>
+        <br>
 
 
 
@@ -501,61 +499,46 @@
                 <!--End nav-tabs-->
                 <div class="tab-content wow fadeIn animated" id="myTabContent">
                     <div class="tab-pane fade show active" id="tab-one" role="tabpanel" aria-labelledby="tab-one">
-                        <div class="row product-grid-4 g-1">
-                            @foreach($products as $product )
-                            <div class="col-lg-2 col-md-2 col-sm-6 col-xs-6 col-6">
-                                <div class="product-cart-wrap mb-30">
-                                    <div class="product-img-action-wrap">
-                                        <div class="product-img product-img-zoom">
-                                            <a href="{{route('details', ['slug'=>$product->slug])}}">
-                                                <img class="default-img" src="{{asset('admin/product/'.$product->image)}}" alt="">
-
-                                            </a>
+                        <div class="product-frame">
+                            <div class="row product-grid-4 g-1">
+                                @foreach($products as $product)
+                                <div class="col-lg-2 col-md-2 col-sm-6 col-xs-6 col-6">
+                                    <div class="product-cart-wrap mb-30">
+                                        <div class="product-img-action-wrap">
+                                            <div class="product-img product-img-zoom">
+                                                <a href="{{route('details', ['slug'=>$product->slug])}}">
+                                                    <img class="default-img" src="{{asset('admin/product/'.$product->image)}}" alt="">
+                                                </a>
+                                            </div>
+                                            <div class="product-badges product-badges-position product-badges-mrg">
+                                                @if($product->is_hot)
+                                                <span class="hot">Hot</span>
+                                                @endif
+                                            </div>
                                         </div>
-
-                                        <div class="product-badges product-badges-position product-badges-mrg">
-                                            @if($product->is_hot)
-                                            <span class="hot">Hot</span>
-                                            @endif
-                                        </div>
-                                    </div>
-                                    <div class="product-content-wrap">
-                                        <!-- <div class="product-category">
-                                            <a href="shop.html">Clothing</a>
-                                        </div> -->
-                                        <h2 style="font-size: 13px; margin: 5px 0; text-align: left; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">
-                                            <a href="{{route('details', ['slug'=>$product->slug])}}">{{$product->name}}</a>
-                                        </h2>
-                                        <div class=" rating-result" title="90%">
-                                            <!-- <span>
-                                                <span>90%</span>
-                                            </span> -->
-                                        </div>
-                                        <div class="product-price">
-                                            <span>{{$product->sale_price}} </span>
-                                            <span class="old-price">{{ $product->reguler_price }}</span>
-                                        </div>
-                                        <div class="product-action-1 show">
-                                            <a aria-label="Giỏ hàng" class="action-btn hover-up" href="#" wire:click.prevent="Store({{$product->id}},'{{$product->name}}',{{$product->sale_price}})"><i class=" fi-rs-shopping-bag-add"></i></a>
+                                        <div class="product-content-wrap">
+                                            <h2 style="font-size: 13px; margin: 5px 0; text-align: left; display: -webkit-box; -webkit-line-clamp: 1; -webkit-box-orient: vertical; overflow: hidden;">
+                                                <a href="{{route('details', ['slug'=>$product->slug])}}">{{$product->name}}</a>
+                                            </h2>
+                                            <div class="product-price">
+                                                <span>{{$product->sale_price}} </span>
+                                                <span class="old-price" style="text-decoration: line-through; color: #888;">{{ $product->reguler_price }}</span>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
+                                @endforeach
                             </div>
-                            @endforeach
+                            <div class="text-center">
+                                <button class="btn btn-primary btn-sm" wire:click="loadMore">Xem Thêm</button>
+                            </div>
+                        </div> <!-- End product-frame -->
 
-                        </div>
-                        <!--End product-grid-4-->
-                        <div class="text-center">
-                            <button class="btn btn-primary btn-sm" wire:click="loadMore">Xem Thêm</button>
-
-                        </div>
                         <br>
-
                     </div>
-
-
                 </div>
                 <!--End tab-content-->
+
             </div>
         </section>
 
@@ -580,18 +563,6 @@
             </div>
         </section> -->
 
-        <div class="container" wire:ignore>
-            <div class="courses-grid" id="clients">
-                @foreach($categories->reverse()->take(4) as $category) <!-- Lấy 4 danh mục cuối cùng -->
-                <div class="item">
-                    <a target="_blank" href="{{route('product.category', ['slug'=>$category->slug])}}">
-                        <img src="{{asset('admin/category/'.$category->image)}}" alt="{{$category->name}}">
-                        <div class="course-name"><b>{{$category->name}}</b></div>
-                    </a>
-                </div>
-                @endforeach
-            </div>
-        </div>
 
 
 
@@ -599,8 +570,10 @@
 
 
         <section class="section-padding" wire:ignore>
-            <div class="container">
-                <h3 class="section-title mb-20 wow fadeIn animated"><span style="font-size: 22px">THƯƠNG HIỆU</span> NỘI BẬT</h3>
+            <div class="container" style="background-color: white; padding: 20px; border-radius: 10px;">
+                <h3 class="section-title mb-20 wow fadeIn animated" style="color: #8B0000;">
+                    <span style="font-size: 22px">THƯƠNG HIỆU</span> NỘI BẬT
+                </h3>
                 <div class="carausel-6-columns-cover position-relative wow fadeIn animated">
                     <div class="slider-arrow slider-arrow-2 carausel-6-columns-arrow" id="carausel-6-columns-3-arrows"></div>
                     <div class="carausel-6-columns text-center" id="carausel-6-columns-4">
@@ -629,6 +602,7 @@
                 </div>
             </div>
         </section>
+
 
 
     </main>

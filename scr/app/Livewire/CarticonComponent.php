@@ -21,10 +21,10 @@ class CarticonComponent extends Component
     public function render()
     {
 
-        // if (Auth::check()) {
-        //     Cart::instance('cart')->store(Auth::user()->email);
-        //     Cart::instance('wishlist')->store(Auth::user()->email);
-        // }
+        if (Auth::check()) {
+            Cart::instance('cart')->store(Auth::user()->email);
+            Cart::instance('wishlist')->store(Auth::user()->email);
+        }
         return view('livewire.carticon-component');
     }
 }

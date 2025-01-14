@@ -108,33 +108,24 @@
 
                                                                             </a>
                                                                         </div>
-                                                                        <div class="product-action-1">
-                                                                            <a aria-label="Quick view" class="action-btn hover-up" data-bs-toggle="modal" data-bs-target="#quickViewModal">
-                                                                                <i class="fi-rs-search"></i></a>
-                                                                            <a aria-label="Add To Wishlist" class="action-btn hover-up" href="{{ route('wishlist') }}"><i class="fi-rs-heart"></i></a>
-                                                                            <a aria-label="Compare" class="action-btn hover-up" href="compare.php"><i class="fi-rs-shuffle"></i></a>
-                                                                        </div>
+
                                                                         <div class="product-badges product-badges-position product-badges-mrg">
+                                                                            @if($qproduct->is_hot)
                                                                             <span class="hot">Hot</span>
+                                                                            @endif
                                                                         </div>
                                                                     </div>
                                                                     <div class="product-content-wrap">
-                                                                        <div class="product-category">
-                                                                            <a href="shop.html">Music</a>
-                                                                        </div>
-                                                                        <h2><a href="product-details.html">Colorful Pattern Shirts</a></h2>
-                                                                        <div class="rating-result" title="90%">
-                                                                            <span>
-                                                                                <span>90%</span>
-                                                                            </span>
-                                                                        </div>
+
+                                                                        <h2 style="font-size: 13px; margin: 5px 0; text-align: left; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">
+                                                                            <a href="{{route('details', ['slug'=>$qproduct->slug])}}">{{$qproduct->name}}</a>
+                                                                        </h2>
+
                                                                         <div class="product-price">
                                                                             <span>{{$qproduct->sale_price}} </span>
                                                                             <span class="old-price">{{$qproduct->reguler_price}}</span>
                                                                         </div>
-                                                                        <div class="product-action-1 show">
-                                                                            <a aria-label="Add To Cart" class="action-btn hover-up" href="shop-cart.php"><i class="fi-rs-shopping-bag-add"></i></a>
-                                                                        </div>
+
                                                                     </div>
                                                                 </div>
                                                             </div>
@@ -356,20 +347,30 @@
                                         </style>
                                         <div class="product-rate-cover text-end">
                                             <div class="product-rate d-inline-block">
-                                                @foreach($reviews as $review)
+                                                <!-- Hiển thị sao trung bình -->
+                                                @if($reviews->where('status', 'approved')->count() > 0)
+                                                @php
+                                                $averageRating = round($reviews->sum('rating') / $reviews->count(), 1);
+                                                @endphp
                                                 <div class="star-rating">
                                                     @for($i = 1; $i <= 5; $i++)
-                                                        @if($i <=$review->rating)
-                                                        <span class="star">★</span>
+                                                        @if($i <=$averageRating)
+                                                        <span class="star">★</span> <!-- Sao đầy -->
                                                         @else
-                                                        <span class="star">☆</span>
+                                                        <span class="star">☆</span> <!-- Sao rỗng -->
                                                         @endif
                                                         @endfor
                                                 </div>
-                                                @endforeach
+                                                @else
+
+                                                @endif
                                             </div>
-                                            <span class="font-small ml-5 text-muted"> {{count($reviews)}} đánh giá</span>
+                                            <span class="font-small ml-5 text-muted">
+                                                <!-- Hiển thị số lượng đánh giá -->
+                                                {{ $reviews->where('status', 'approved')->count()  }} đánh giá
+                                            </span>
                                         </div>
+
                                     </div>
 
 
@@ -478,7 +479,7 @@
                                                     <div class="modal-body">
                                                         <div class="coupons-list">
                                                             @foreach($coupons as $coupon)
-                                                            <div class="offer-card">
+                                                            <div class="offer-card" wire:click="showCouponDetails({{ $coupon->id }})">
                                                                 <div class="offer-icon discount">
                                                                     <span class="percent">%</span>
                                                                 </div>
@@ -497,6 +498,35 @@
                                                     </div>
                                                     <div class="modal-footer">
                                                         <button type="button" class="btn btn-secondary" wire:click="toggleShowAll">Đóng</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        @endif
+
+                                        <!-- Modal hiển thị chi tiết mã giảm giá -->
+                                        @if($selectedCoupon)
+                                        <div class="modal show" tabindex="-1">
+                                            <div class="modal-dialog">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title">Chi tiết mã giảm giá</h5>
+                                                        <button type="button" class="btn-close" wire:click="closeCouponDetails"></button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <p><strong>Mã giảm:</strong> {{ $selectedCoupon->coupon_code }}</p>
+                                                        <p><strong>Giảm giá:</strong>
+                                                            @if($selectedCoupon->coupon_type === 'fixed')
+                                                            {{ number_format($selectedCoupon->coupon_value, 0, '.', '') }}k
+                                                            @elseif($selectedCoupon->coupon_type === 'percent')
+                                                            {{ number_format($selectedCoupon->coupon_value, 0, '.', '') }}%
+                                                            @endif
+                                                        </p>
+                                                        <p><strong>Áp dụng cho giá trị giỏ hàng từ:</strong> {{ number_format($selectedCoupon->cart_value, 0, '.', '') }}k</p>
+                                                        <p><strong>Ngày hết hạn:</strong> {{ $selectedCoupon->end_date }}</p>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-secondary" wire:click="closeCouponDetails">Đóng</button>
                                                     </div>
                                                 </div>
                                             </div>
@@ -534,6 +564,7 @@
                                                 @endif
                                                 @endforeach
                                         </div>
+
 
                                         <!-- Modal để hiển thị chi tiết mã giảm giá -->
                                         @if($selectedCoupon)
@@ -729,28 +760,58 @@
 
 
                                     <div class="detail-extralink">
+
                                         <div class="detail-qty border radius">
                                             <a href="#" class="qty-down" wire:click.prevent="QtyDecrease()"><i class="fi-rs-angle-small-down"></i></a>
-                                            <span class="qty-val" wire:model="qty">{{$qty}}</span>
+                                            <span class="qty-val" wire:model.live="qty">{{$qty}}</span>
                                             <a href="#" class="qty-up" wire:click.prevent="QtyIncrease('{{$product->quantity}}')"><i class="fi-rs-angle-small-up"></i></a>
                                         </div>
                                         <div class="product-extra-link2">
-
-                                            @if($product->quantity==0)
-                                            <button type="submit" class="button button-add-to-cart" disabled data-bs-toggle="modal" data-bs-target="#quickViewModal" wire:click.prevent="Store({{$product->id}},'{{$product->name}}',{{$product->sale_price}})"><b>Thêm vào giỏ hàng</b></button>
-                                            @else
-                                            <button type="submit" class="button button-add-to-cart" data-bs-toggle="modal" data-bs-target="#quickViewModal" wire:click.prevent="Store({{$product->id}},'{{$product->name}}',{{$product->sale_price}})"><b>Thêm vào giỏ hàng</b></button>
-
+                                            <!-- Hiển thị thông báo nếu admin cố gắng thêm sản phẩm vào giỏ hàng -->
+                                            @if(session()->has('admin_alert'))
+                                            <div class="alert alert-warning">
+                                                {{ session('admin_alert') }}
+                                            </div>
                                             @endif
+
+                                            @if($product->quantity == 0)
+                                            <!-- Sản phẩm hết hàng -->
+                                            <button type="submit" class="button button-add-to-cart" disabled data-bs-toggle="modal" data-bs-target="#quickViewModal">
+                                                <b>Thêm vào giỏ hàng</b>
+                                            </button>
+                                            @else
+                                            @if(Auth::check() && Auth::user()->utype === 'admin')
+                                            <!-- Nếu là admin, hiển thị thông báo và không cho phép thêm vào giỏ hàng -->
+                                            <button type="button" class="button button-add-to-cart" disabled wire:click.prevent="showAdminAlert">
+                                                <b>Thêm vào giỏ hàng</b>
+                                            </button>
+                                            @else
+                                            <!-- Người dùng thông thường hoặc khách có thể thêm vào giỏ hàng -->
+                                            <button type="submit" class="button button-add-to-cart" data-bs-toggle="modal" data-bs-target="#quickViewModal" wire:click.prevent="Store({{$product->id}},'{{$product->name}}',{{$product->sale_price}})">
+                                                <b>Thêm vào giỏ hàng</b>
+                                            </button>
+                                            @endif
+                                            @endif
+
+
                                             @php
-                                            $witem=Cart::instance('wishlist')->content()->pluck('id');
+                                            $witem = Cart::instance('wishlist')->content()->pluck('id');
                                             @endphp
+
                                             @if($witem->contains($product->id))
-                                            <a aria-label="Remove From Wishlist" class="action-btn hover-up wishlisted" href="{{route('wishlist')}}" wire:click.prevent="removefromWishlist({{$product->id}})"><i class="fi-rs-heart"></i></a>
+                                            <!-- Nếu sản phẩm đã trong danh sách yêu thích -->
+                                            <a aria-label="Remove From Wishlist" class="action-btn hover-up wishlisted" href="{{route('wishlist')}}" wire:click.prevent="removefromWishlist({{$product->id}})">
+                                                <i class="fi-rs-heart"></i>
+                                            </a>
                                             @else
-                                            <a aria-label="Add To Wishlist" class="action-btn hover-up" href="{{route('wishlist')}}" wire:click.prevent="addtoWishlist({{$product->id}},'{{$product->name}}',{{$product->sale_price}})"><i class="fi-rs-heart"></i></a>
+                                            <!-- Nếu sản phẩm chưa trong danh sách yêu thích -->
+                                            <a aria-label="Add To Wishlist" class="action-btn hover-up" href="{{route('wishlist')}}" wire:click.prevent="addtoWishlist({{$product->id}},'{{$product->name}}',{{$product->sale_price}})">
+                                                <i class="fi-rs-heart"></i>
+                                            </a>
                                             @endif
+
                                         </div>
+
                                     </div>
                                     <!-- <ul class="product-meta font-xs color-grey mt-50">
                                             <li class="mb-5">SKU: <a href="#">FWM15VKT</a></li>
@@ -776,7 +837,8 @@
                                 </li>
                                 <li class="nav-item">
                                     <a class="nav-link" id="Reviews-tab" data-bs-toggle="tab" href="#Reviews">
-                                        Đánh giá ({{ $reviews->count() > 0 ? $reviews->count() : '0' }})
+                                        Đánh giá ({{ $reviews->where('status', 'approved')->count() ?? 0 }})
+
                                     </a>
                                 </li>
                             </ul>
@@ -829,29 +891,29 @@
                                 </div>
 
                                 <div class="tab-pane fade" id="Reviews">
-                                    <!--Comments-->
+                                    <!--Phần đánh giá-->
                                     <div class="comments-area">
                                         <div class="row">
+                                            <!-- Cột bên trái - Danh sách đánh giá -->
                                             <div class="col-lg-8">
                                                 <h4 class="mb-30">Đánh giá sản phẩm</h4>
                                                 <div class="comment-list">
                                                     @if($reviews->isEmpty())
-                                                    <!-- Nếu không có đánh giá, hiển thị thông báo -->
+                                                    <!-- Hiển thị khi không có đánh giá -->
                                                     <p class="text-center text-muted">Chưa có đánh giá nào</p>
                                                     @else
                                                     @foreach($reviews as $review)
                                                     @if($review->status === 'approved')
                                                     <div class="single-comment d-flex mb-4 p-3 shadow-sm rounded bg-white">
-                                                        <!-- Nội dung đánh giá -->
                                                         <div class="desc flex-grow-1">
-                                                            <!-- Tên người dùng -->
+                                                            <!-- Phần thông tin người đánh giá -->
                                                             <div class="d-flex align-items-center mb-2">
                                                                 <h6 class="mb-0 me-2 text-dark">
                                                                     <a href="#" class="text-decoration-none">
                                                                         {{ $review->user ? $review->user->name : 'Người dùng không xác định' }}
                                                                     </a>
                                                                 </h6>
-                                                                <!-- Xếp hạng sao -->
+                                                                <!-- Hiển thị số sao đánh giá -->
                                                                 <div class="star-rating">
                                                                     @for($i = 1; $i <= 5; $i++)
                                                                         @if($i <=$review->rating)
@@ -862,25 +924,73 @@
                                                                         @endfor
                                                                 </div>
                                                             </div>
-                                                            <!-- Bình luận -->
+
+                                                            <!-- Nội dung bình luận -->
                                                             <p class="mb-2 text-secondary">{{ $review->comment }}</p>
 
-                                                            <!-- Hiển thị ảnh đánh giá (nếu có) -->
+                                                            <!-- Phần hiển thị ảnh đánh giá -->
                                                             <div class="review-images mb-2 d-flex gap-2">
                                                                 @if($review->images)
                                                                 @foreach(explode(',', $review->images) as $image)
                                                                 <img src="{{ asset('admin/review/' . $image) }}"
-                                                                    alt="Review Image"
+                                                                    alt="Ảnh đánh giá"
                                                                     class="img-fluid rounded"
                                                                     style="width: 100px; height: 100px; object-fit: cover;">
                                                                 @endforeach
                                                                 @endif
                                                             </div>
 
-                                                            <!-- Thông tin thời gian và trả lời -->
+                                                            <!-- Thời gian đánh giá -->
                                                             <div class="d-flex justify-content-between align-items-center">
-                                                                <span class="text-muted font-xs">{{ $review->created_at->format('d/m/Y H:i') }}</span>
+                                                                <span class="text-muted font-xs">
+                                                                    {{ $review->created_at->format('d/m/Y H:i') }}
+                                                                </span>
                                                             </div>
+
+                                                            <!-- Phần admin trả lời - Chỉ hiển thị với admin -->
+                                                            @if(Auth::check() && Auth::user()->utype === 'admin')
+                                                            <div class="admin-reply-section mt-3">
+                                                                <button class="btn btn-sm btn-outline-primary reply-toggle"
+                                                                    onclick="toggleReplyForm('{{ $review->id }}')">
+                                                                    {{ $review->admin_reply ? 'Chỉnh sửa phản hồi' : 'Phản hồi' }}
+                                                                </button>
+
+                                                                <!-- Form trả lời của admin -->
+                                                                <form id="replyForm-{{ $review->id }}"
+                                                                    action="{{ route('review.reply', $review->id) }}"
+                                                                    method="POST"
+                                                                    class="mt-2"
+                                                                    style="display: none;">
+                                                                    @csrf
+                                                                    <div class="form-group">
+                                                                        <textarea class="form-control"
+                                                                            name="admin_reply"
+                                                                            rows="3"
+                                                                            placeholder="Nhập phản hồi của bạn...">{{ $review->admin_reply ?? '' }}</textarea>
+                                                                    </div>
+                                                                    <div class="mt-2">
+                                                                        <button type="submit" class="btn btn-primary btn-sm">Gửi phản hồi</button>
+                                                                        <button type="button"
+                                                                            class="btn btn-secondary btn-sm"
+                                                                            onclick="toggleReplyForm('{{ $review->id }}')">Hủy</button>
+                                                                    </div>
+                                                                </form>
+                                                            </div>
+                                                            @endif
+
+                                                            <!-- Hiển thị phản hồi của admin nếu có -->
+                                                            @if($review->admin_reply)
+                                                            <div class="admin-reply mt-3 bg-light p-3 rounded">
+                                                                <div class="d-flex align-items-center mb-2">
+                                                                    <span class="badge bg-primary me-2">Panda.com</span>
+                                                                    <small class="text-muted">Phản hồi:</small>
+                                                                </div>
+                                                                <p class="mb-1">{{ $review->admin_reply }}</p>
+                                                                <small class="text-muted">
+                                                                    {{ $review->admin_reply_at ? $review->admin_reply_at->format('d/m/Y H:i') : '' }}
+                                                                </small>
+                                                            </div>
+                                                            @endif
                                                         </div>
                                                     </div>
                                                     @endif
@@ -893,22 +1003,19 @@
                                                 </div>
                                             </div>
 
-
-
-
-
-
+                                            <!-- Cột bên phải - Thống kê đánh giá -->
                                             <div class="col-lg-4">
-                                                <h4 class="mb-30">Đánh giá ({{ $reviews->count() }})</h4>
+                                                <h4 class="mb-30">Đánh giá({{ $reviews->where('status', 'approved')->count() ?? 0 }})</h4>
                                                 <div class="d-flex mb-30">
                                                     <div class="product-rate d-inline-block mr-15">
-                                                        <div class="product-rating" style="width: {{ $reviews->count() > 0 ? ($reviews->sum('rating') / ($reviews->count() * 5)) * 100 : 0 }}%"></div>
+                                                        <div class="product-rating" style="width: {{ $reviews->count() > 0 ? ($reviews->sum('rating') / ($reviews->count() * 5)) * 100 : 0 }}%">
+                                                        </div>
                                                     </div>
                                                     <h6>{{ $reviews->count() > 0 ? round($reviews->sum('rating') / $reviews->count(), 1) : 0 }}/5 sao</h6>
                                                 </div>
 
                                                 @php
-                                                // Đếm số lượng đánh giá cho mỗi mức sao
+                                                // Tính toán thống kê đánh giá
                                                 $totalReviews = $reviews->count();
                                                 $ratingStats = [
                                                 '5_sao' => $reviews->where('rating', 5)->count(),
@@ -919,22 +1026,32 @@
                                                 ];
                                                 @endphp
 
+                                                <!-- Hiển thị thanh tiến trình cho từng mức sao -->
                                                 @foreach($ratingStats as $star => $count)
                                                 <div class="progress">
                                                     <span>{{ ucfirst(str_replace('_', ' ', $star)) }}</span>
-                                                    <div class="progress-bar" role="progressbar" style="width: {{ $totalReviews > 0 ? ($count / $totalReviews) * 100 : 0 }}%;" aria-valuenow="{{ $totalReviews > 0 ? ($count / $totalReviews) * 100 : 0 }}" aria-valuemin="0" aria-valuemax="100">{{ $totalReviews > 0 ? round(($count / $totalReviews) * 100, 1) : 0 }}%</div>
+                                                    <div class="progress-bar"
+                                                        role="progressbar"
+                                                        style="width: {{ $totalReviews > 0 ? ($count / $totalReviews) * 100 : 0 }}%;"
+                                                        aria-valuenow="{{ $totalReviews > 0 ? ($count / $totalReviews) * 100 : 0 }}"
+                                                        aria-valuemin="0"
+                                                        aria-valuemax="100">
+                                                        {{ $totalReviews > 0 ? round(($count / $totalReviews) * 100, 1) : 0 }}%
+                                                    </div>
                                                 </div>
                                                 @endforeach
-
-                                                <!-- <a href="#" class="font-xs text-muted">How are ratings calculated?</a> -->
                                             </div>
-
-
                                         </div>
                                     </div>
-
                                 </div>
+
+
                             </div>
+
+
+
+
+
                         </div>
                         <div class="row mt-60" wire:ignore>
                             <div class="col-12">
@@ -954,39 +1071,15 @@
 
                                                     </a>
                                                 </div>
-                                                <div class="product-action-1">
-                                                    <a aria-label="Quick view" class="action-btn small hover-up" data-bs-toggle="modal" wire:click.prevent="ProductQuickView('{{$rproduct->id}}')"><i class="fi-rs-search"></i></a>
 
-
-
-                                                    @php
-                                                    $witem=Cart::instance('wishlist')->content()->pluck('id');
-                                                    @endphp
-                                                    @if($witem->contains($product->id))
-                                                    <a aria-label="Remove From Wishlist" class="action-btn hover-up wishlisted" href="{{route('wishlist')}}" wire:click.prevent="removefromWishlist({{$product->id}})"><i class="fi-rs-heart"></i></a>
-                                                    @else
-                                                    <a aria-label="Add To Wishlist" class="action-btn hover-up" href="{{route('wishlist')}}" wire:click.prevent="addtoWishlist({{$product->id}},'{{$product->name}}',{{$product->sale_price}})"><i class="fi-rs-heart"></i></a>
-                                                    @endif
-                                                    <a aria-label="Add To Wishlist" class="action-btn small hover-up" href="{{route('wishlist')}}" tabindex="0"><i class="fi-rs-heart"></i></a>
-                                                    <a aria-label="Compare" class="action-btn small hover-up" href="compare.php" tabindex="0"><i class="fi-rs-shuffle"></i></a>
-                                                </div>
                                                 <div class="product-badges product-badges-position product-badges-mrg">
                                                     <span class="hot">Hot</span>
                                                 </div>
                                             </div>
                                             <div class="product-content-wrap">
-                                                <h2><a href="{{route('details', ['slug'=>$rproduct->slug])}}" tabindex="0">{{ $rproduct->name }}</a></h2>
-                                                @foreach($reviews as $review)
-                                                <div class="star-rating">
-                                                    @for($i = 1; $i <= 5; $i++)
-                                                        @if($i <=$review->rating)
-                                                        <span class="star">★</span>
-                                                        @else
-                                                        <span class="star">☆</span>
-                                                        @endif
-                                                        @endfor
-                                                </div>
-                                                @endforeach
+                                                <h2 style="font-size: 13px; margin: 5px 0; text-align: left; display: -webkit-box; -webkit-line-clamp: 1; -webkit-box-orient: vertical; overflow: hidden;">
+                                                    <a href="{{route('details', ['slug'=>$product->slug])}}">{{$product->name}}</a>
+                                                </h2>
                                                 <div class="product-price">
                                                     <span>{{ $rproduct->sale_price }}</span>
                                                     <span class="old-price">{{ $rproduct->reguler_price }}</span>
@@ -1024,19 +1117,11 @@
                                 <img src="{{asset('admin/product/'.$nproduct->image)}}" alt="#">
                             </div>
                             <div class="content pt-10">
-                                <h5><a href="{{route('details', ['slug'=>$nproduct->slug])}}">{{ $nproduct->name }}</a></h5>
+                                <h5 style="overflow: hidden; text-overflow: ellipsis; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;">
+                                    <a href="{{route('details', ['slug'=>$nproduct->slug])}}">{{$nproduct->name}}</a>
+                                </h5>
                                 <p class="price mb-0 mt-5">{{$nproduct->sale_price}}đ</p>
-                                @foreach($reviews as $review)
-                                <div class="star-rating">
-                                    @for($i = 1; $i <= 5; $i++)
-                                        @if($i <=$review->rating)
-                                        <span class="star">★</span>
-                                        @else
-                                        <span class="star">☆</span>
-                                        @endif
-                                        @endfor
-                                </div>
-                                @endforeach
+
                             </div>
                         </div>
                         @endforeach
@@ -1048,3 +1133,11 @@
     </section>
 
 </div>
+
+<!-- JavaScript để xử lý hiển thị/ẩn form trả lời -->
+<script>
+    function toggleReplyForm(reviewId) {
+        const form = document.getElementById(`replyForm-${reviewId}`);
+        form.style.display = form.style.display === 'none' ? 'block' : 'none';
+    }
+</script>

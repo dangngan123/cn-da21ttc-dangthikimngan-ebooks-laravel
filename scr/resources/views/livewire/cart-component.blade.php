@@ -252,9 +252,6 @@
                                 </div>
 
                                 @endif
-
-
-
                                 <a href="#" class="btn w-100" wire:click.prevent="checkout()"> <i class="fi-rs-box-alt mr-10"></i> THANH TOÁN</a>
                             </div>
                         </div>
@@ -366,36 +363,18 @@
                                     <h2 style="font-size: 13px; margin: 5px 0; text-align: left; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">
                                         <a href="{{route('details', ['slug'=>$product->slug])}}">{{$product->name}}</a>
                                     </h2>
-                                    <div class="rating-result" title="90%">
-                                        <!-- <span>
-                                            <span>90%</span>
-                                        </span> -->
-                                    </div>
+                                   
                                     <div class="product-price">
                                         <span>{{ $product->sale_price }}</span>
                                         <span class="old-price">{{ $product->reguler_price }}</span>
                                     </div>
-                                    <div class="product-action-1 show">
-                                        <a aria-label="Add To Cart" class="action-btn hover-up" href="#" wire:click.prevent="Store({{$product->id}},'{{$product->name}}',{{$product->sale_price}})"><i class="fi-rs-shopping-bag-add"></i></a>
-                                    </div>
+                                   
                                 </div>
                             </div>
                         </div>
                         @endforeach
                     </div>
-                    <!--pagination-->
-                    <div class="pagination-area mt-15 mb-sm-5 mb-lg-0">
-                        <nav aria-label="Page navigation example">
-                            <ul class="pagination justify-content-start">
-                                <li class="page-item active"><a class="page-link" href="#">01</a></li>
-                                <li class="page-item"><a class="page-link" href="#">02</a></li>
-                                <li class="page-item"><a class="page-link" href="#">03</a></li>
-                                <li class="page-item"><a class="page-link dot" href="#">...</a></li>
-                                <li class="page-item"><a class="page-link" href="#">16</a></li>
-                                <li class="page-item"><a class="page-link" href="#"><i class="fi-rs-angle-double-small-right"></i></a></li>
-                            </ul>
-                        </nav>
-                    </div>
+                    
                 </div>
 
             </div>

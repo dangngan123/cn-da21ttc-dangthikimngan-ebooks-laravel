@@ -175,7 +175,7 @@
 
                                     <!-- Nút đăng nhập bằng Google -->
                                     <div class="form-group text-center">
-                                        <a href="{{ route('google.callback') }}" class="btn-google">
+                                        <a href="{{ route('google.redirect') }}" class="btn-google">
                                             <img src="{{ asset('assets/imgs/login/google.png') }}" alt="Google Icon">
                                             Đăng nhập bằng Google
                                         </a>

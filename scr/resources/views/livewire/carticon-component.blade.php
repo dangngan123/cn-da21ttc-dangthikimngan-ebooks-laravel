@@ -11,10 +11,15 @@
                 @foreach(Cart::instance('cart')->content() as $item)
                 <li>
                     <div class="shopping-cart-img">
-                        <a href="product-details.html"><img alt="Surfside Media" src="{{asset('admin/product/'.$item->model->image)}}"></a>
+                        <a href="{{route('details',['slug'=>$item->model->slug])}}"><img alt="Surfside Media" src="{{asset('admin/product/'.$item->model->image)}}"></a>
                     </div>
                     <div class="shopping-cart-title">
-                        <h4><a href="product-details.html">{{ucwords(substr($item->model->name, 0, 20))}}</a></h4>
+                        <h4>
+                            <a href="{{ route('details', ['slug' => $item->model->slug]) }}">
+                                {{ ucwords(mb_substr($item->model->name, 0, 20, 'UTF-8')) }}
+                            </a>
+                        </h4>
+
                         <h4><span>{{$item->qty}} x </span>{{$item->model->sale_price}}đ</h4>
                     </div>
                     <div class="shopping-cart-delete">
